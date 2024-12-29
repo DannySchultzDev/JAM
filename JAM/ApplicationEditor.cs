@@ -23,6 +23,11 @@ namespace JAM
 		private Company? companyToEdit;
 		private Application? applicationToEdit;
 
+		private static Dictionary<Company, ApplicationEditor> activeCompanies = new Dictionary<Company, ApplicationEditor>();
+		private static Dictionary<Application, ApplicationEditor> activeApplications = new Dictionary<Application, ApplicationEditor>();
+		//If the form is closing due to it being a duplicate, it should not remove the original from the dictionary.
+		private bool removeFromDictionary = true;
+
 		public ApplicationEditor(EditorType editorType, Company? companyToEdit, Application? applicationToEdit)
 		{
 			this.editorType = editorType;
@@ -36,18 +41,72 @@ namespace JAM
 
 		private void ApplicationEditor_Load(object sender, EventArgs e)
 		{
+			if (companyToEdit != null)
+			{
+				if (activeCompanies.ContainsKey(companyToEdit))
+				{
+					if (activeCompanies[companyToEdit].WindowState == FormWindowState.Minimized)
+						activeCompanies[companyToEdit].WindowState = FormWindowState.Normal;
+					activeCompanies[companyToEdit].Focus();
+					removeFromDictionary = false;
+					Close();
+					return;
+				}
+				activeCompanies.Add(companyToEdit, this);
+			}
+
+			if (applicationToEdit != null)
+			{
+				if (activeApplications.ContainsKey(applicationToEdit))
+				{
+					if (activeApplications[applicationToEdit].WindowState == FormWindowState.Minimized)
+						activeApplications[applicationToEdit].WindowState = FormWindowState.Normal;
+					activeApplications[applicationToEdit].Focus();
+					removeFromDictionary = false;
+					Close();
+					return;
+				}
+				activeApplications.Add(applicationToEdit, this);
+			}
+
 			try
 			{
 				switch (editorType)
 				{
 					case EditorType.CREATE_APPLICATION:
 						mainTabControl.TabPages.Remove(augmentationsTabPage);
+						Text = "Application Creator";
 						foreach (string companyName in Home.companiesN.Keys)
 							reuseCompanyComboBox.Items.Add(companyName);
+						break;
+					case EditorType.EDIT_COMPANY:
+						mainTabControl.TabPages.Remove(applicationTabPage);
+						mainTabControl.TabPages.Remove(augmentationsTabPage);
+						reuseCompanyCheckBox.Enabled = false;
+						reuseCompanyCheckBox.Visible = false;
+						reuseCompanyComboBox.Enabled = false;
+						reuseCompanyComboBox.Visible = false;
+						viewCompanyButton.Enabled = false;
+						viewCompanyButton.Visible = false;
+						companyTableLayout.RowStyles[0].Height = 0;
+						Text = "Company Editor";
+						try
+						{
+							newCompanyGroupBox.Text = "Edit " + companyToEdit!.name;
+							companyNameTextBox.Text = companyToEdit.name;
+							companyWebsiteTextBox.Text = companyToEdit.website;
+							companyCareersWebsiteTextBox.Text = companyToEdit.careerWebsite;
+							companyCareersHomeTextBox.Text = companyToEdit.careerHome;
+							companyEmailTextBox.Text = companyToEdit.email;
+							companyPasswordTextBox.Text = companyToEdit.password;
+							companyInfoTextBox.Text = companyToEdit.info;
+						}
+						catch { }
 						break;
 					default:
 						throw new NotImplementedException();
 				}
+				statusChanged = false;
 			}
 			catch (Exception ex)
 			{
@@ -160,7 +219,7 @@ namespace JAM
 			applicationImageFlowLayout.Controls.Remove(lastClickedImage);
 		}
 
-		private void CreateApplication_FormClosing(object sender, FormClosingEventArgs e)
+		private void CloseApplicationEditor(object sender, FormClosingEventArgs e)
 		{
 			TryDestroyCurrTempImage();
 
@@ -173,7 +232,13 @@ namespace JAM
 				}
 			}
 			if (!e.Cancel)
+			{
 				Home.applicationEditors.Remove(this);
+				if (removeFromDictionary && companyToEdit != null)
+					activeCompanies.Remove(companyToEdit);
+				if (removeFromDictionary && applicationToEdit != null)
+					activeApplications.Remove(applicationToEdit);
+			}
 		}
 
 		private void applicationImageDeleteButton_Click(object sender, EventArgs e)
@@ -328,9 +393,9 @@ namespace JAM
 
                         Application application = new Application(
 							companyGuid,
-							DateTime.Now.ToString(),
+							DateTime.Now.ToString("MM/dd/yyyy"),
 							ApplicationStatus.SENT.ToString(),
-							DateTime.Now.ToString(),
+							DateTime.Now.ToString("MM/dd/yyyy"),
 							applicationPositionTextBox.Text,
 							applicationLinkTextBox.Text,
 							applicationType,
@@ -342,6 +407,29 @@ namespace JAM
 							applicationInfoTextBox.Text);
 						Home.applications.Add(application.guid, application);
 						FileManager.SaveXml(application.ConvertToXml(), FileType.APPLICATION, application.guid + ".xml");
+						break;
+					case EditorType.EDIT_COMPANY:
+						if (!companyNameTextBox.Text.Equals(companyToEdit!.name) && Home.companiesN.ContainsKey(companyNameTextBox.Text))
+							errorList.Add("Company created has the same name as a pre-existing company.");
+
+						if (errorList.Count > 0)
+							break;
+
+						string originalName = companyToEdit.name;
+
+						companyToEdit.name = companyNameTextBox.Text;
+						companyToEdit.website = companyWebsiteTextBox.Text;
+						companyToEdit.careerWebsite = companyCareersWebsiteTextBox.Text;
+						companyToEdit.careerHome = companyCareersHomeTextBox.Text;
+						companyToEdit.email = companyEmailTextBox.Text;
+						companyToEdit.password = companyPasswordTextBox.Text;
+						companyToEdit.info = companyInfoTextBox.Text;
+
+						FileManager.SaveXml(companyToEdit.ConvertToXml(), FileType.COMPANY, companyToEdit.guid + ".xml");
+						Home.companiesG[companyToEdit.guid] = companyToEdit;
+						Home.companiesN.Remove(originalName);
+						Home.companiesN.Add(companyToEdit.name, companyToEdit);
+
 						break;
 					default:
 						throw new NotImplementedException();

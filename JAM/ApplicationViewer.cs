@@ -23,23 +23,6 @@ namespace JAM
 
 		private void ApplicationViewer_Load(object sender, EventArgs e)
 		{
-			foreach (Company company in Home.companiesN.Values)
-			{
-				companyApplicationDictionary.Add(company, new List<Application>());
-			}
-
-			foreach (Application application in Home.applications.Values)
-			{
-				try
-				{
-					Company? company;
-					if (!Home.companiesG.TryGetValue(application.company, out company))
-						continue;
-					companyApplicationDictionary[company].Add(application);
-				}
-				catch { }
-			}
-
 			DataGridViewColumn companyNameColumn = new DataGridViewColumn();
 			companyNameColumn.Name = "Name";
 			companyNameColumn.HeaderText = "Name";
@@ -60,11 +43,103 @@ namespace JAM
 			companyEditColumn.HeaderText = "Edit";
 			companyViewColumn.CellTemplate = new DataGridViewButtonCell();
 			companiesGrid.Columns.Add(companyEditColumn);
+			DataGridViewColumn applicationPositionColumn = new DataGridViewColumn();
+			applicationPositionColumn.Name = "Position";
+			applicationPositionColumn.HeaderText = "Position";
+			applicationPositionColumn.CellTemplate = new DataGridViewTextBoxCell();
+			applicationsGrid.Columns.Add(applicationPositionColumn);
+			DataGridViewColumn applicationStatusColumn = new DataGridViewColumn();
+			applicationStatusColumn.Name = "Status";
+			applicationStatusColumn.HeaderText = "Status";
+			applicationStatusColumn.CellTemplate = new DataGridViewTextBoxCell();
+			applicationsGrid.Columns.Add(applicationStatusColumn);
+			DataGridViewColumn applicationStatusTimeColumn = new DataGridViewColumn();
+			applicationStatusTimeColumn.Name = "Status Time";
+			applicationStatusTimeColumn.HeaderText = "Last Update";
+			applicationStatusTimeColumn.CellTemplate = new DataGridViewTextBoxCell();
+			applicationsGrid.Columns.Add(applicationStatusTimeColumn);
+			DataGridViewButtonColumn applicationViewColumn = new DataGridViewButtonColumn();
+			applicationViewColumn.Name = "View";
+			applicationViewColumn.HeaderText = "View";
+			applicationViewColumn.CellTemplate = new DataGridViewButtonCell();
+			applicationsGrid.Columns.Add(applicationViewColumn);
+			DataGridViewButtonColumn applicationEditColumn = new DataGridViewButtonColumn();
+			applicationEditColumn.Name = "Edit";
+			applicationEditColumn.HeaderText = "Edit";
+			applicationEditColumn.CellTemplate = new DataGridViewButtonCell();
+			applicationsGrid.Columns.Add(applicationEditColumn);
+
+			UpdateData();
+		}
+
+		private void refreshButton_Click(object sender, EventArgs e)
+		{
+			UpdateData();
+		}
+
+		private void UpdateData()
+		{
+			companyApplicationDictionary.Clear();
+
+			foreach (Company company in Home.companiesN.Values)
+			{
+				companyApplicationDictionary.Add(company, new List<Application>());
+			}
+
+			foreach (Application application in Home.applications.Values)
+			{
+				try
+				{
+					Company? company;
+					if (!Home.companiesG.TryGetValue(application.company, out company))
+						continue;
+					companyApplicationDictionary[company].Add(application);
+				}
+				catch { }
+			}
+
+			UpdateCompanyRows();
+			UpdateApplicationsRows();
+			lastUpdateLabel.Text = "Last update: " + DateTime.Now.ToString();
+		}
+
+		private void UpdateCompanyRows()
+		{
+			companiesGrid.Rows.Clear();
 
 			foreach (KeyValuePair<Company, List<Application>> companyApplications in companyApplicationDictionary)
 			{
 				int index = companiesGrid.Rows.Add(companyApplications.Key.name, companyApplications.Value.Count);
-				Button button = (Button)companiesGrid[2, index].Value;
+				companiesGrid.Rows[index].Tag = companyApplications.Key;
+			}
+		}
+
+		private void companiesGrid_SelectionChanged(object sender, EventArgs e)
+		{
+			UpdateApplicationsRows();
+		}
+
+		private void UpdateApplicationsRows()
+		{
+			applicationsGrid.Rows.Clear();
+
+			if (companyApplicationDictionary.Count == 0)
+				return;
+
+			Company selectedCompany;
+			try
+			{
+				DataGridViewCell selectedCell = companiesGrid.SelectedCells[0];
+				selectedCompany = (Company)selectedCell.OwningRow.Tag!;
+				foreach (Application application in companyApplicationDictionary[selectedCompany])
+				{
+					int index = applicationsGrid.Rows.Add(application.position, application.status, application.statusTime);
+					applicationsGrid.Rows[index].Tag = application;
+				}
+			}
+			catch
+			{
+				return;
 			}
 		}
 
@@ -76,34 +151,60 @@ namespace JAM
 			switch (e.ColumnIndex)
 			{
 				case 2:
-					{
-						e.Paint(e.CellBounds, DataGridViewPaintParts.All);
-
-						int w = viewImage.Width;
-						int h = viewImage.Height;
-						int x = e.CellBounds.Left + (e.CellBounds.Width - w) / 2;
-						int y = e.CellBounds.Top + (e.CellBounds.Height - h) / 2;
-
-						e.Graphics!.DrawImage(viewImage, x, y, w, h);
-
-						e.Handled = true;
-						break;
-					}
+					PaintCell(e, viewImage);
+					break;
 				case 3:
-					{
-						e.Paint(e.CellBounds, DataGridViewPaintParts.All);
-
-						int w = editImage.Width;
-						int h = editImage.Height;
-						int x = e.CellBounds.Left + (e.CellBounds.Width - w) / 2;
-						int y = e.CellBounds.Top + (e.CellBounds.Height - h) / 2;
-
-						e.Graphics!.DrawImage(editImage, x, y, w, h);
-
-						e.Handled = true;
-						break;
-					}
+					PaintCell(e, editImage);
+					break;
 			}
+		}
+
+		private void applicationsGrid_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
+		{
+			if (e.RowIndex < 0)
+				return;
+
+			switch (e.ColumnIndex)
+			{
+				case 3:
+					PaintCell(e, viewImage);
+					break;
+				case 4:
+					PaintCell(e, editImage);
+					break;
+			}
+		}
+
+		private void PaintCell(DataGridViewCellPaintingEventArgs e, Image image)
+		{
+			e.Paint(e.CellBounds, DataGridViewPaintParts.All);
+
+			int w = image.Width;
+			int h = image.Height;
+			int x = e.CellBounds.Left + (e.CellBounds.Width - w) / 2;
+			int y = e.CellBounds.Top + (e.CellBounds.Height - h) / 2;
+
+			e.Graphics!.DrawImage(image, x, y, w, h);
+
+			e.Handled = true;
+		}
+
+		private void companiesGrid_CellContentClick(object sender, DataGridViewCellEventArgs e)
+		{
+			try
+			{
+				switch (e.ColumnIndex)
+				{
+					case 2:
+						MessageBox.Show(((Company)companiesGrid.Rows[e.RowIndex].Tag!).name);
+						break;
+					case 3:
+						ApplicationEditor editor = new ApplicationEditor(EditorType.EDIT_COMPANY, (Company)companiesGrid.Rows[e.RowIndex].Tag!, null);
+						editor.Show();
+						break;
+				}
+			}
+			catch { }
 		}
 	}
 }

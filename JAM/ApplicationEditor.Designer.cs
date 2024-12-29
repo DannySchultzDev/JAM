@@ -939,7 +939,7 @@
 			Name = "ApplicationEditor";
 			ShowIcon = false;
 			Text = "Application Editor";
-			FormClosing += CreateApplication_FormClosing;
+			FormClosing += CloseApplicationEditor;
 			Load += ApplicationEditor_Load;
 			mainTableLayout.ResumeLayout(false);
 			mainTabControl.ResumeLayout(false);

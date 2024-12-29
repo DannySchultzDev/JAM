@@ -28,6 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ApplicationViewer));
 			mainSplitContainer = new SplitContainer();
 			companiesTableLayoutPanel = new TableLayoutPanel();
 			companiesLabel = new Label();
@@ -35,6 +36,11 @@
 			applicationsTableLayoutPanel = new TableLayoutPanel();
 			applicationsLayout = new Label();
 			applicationsGrid = new DataGridView();
+			statusStrip = new StatusStrip();
+			lastUpdateLabel = new ToolStripStatusLabel();
+			statusStripSpacer = new ToolStripStatusLabel();
+			refreshButton = new ToolStripDropDownButton();
+			mainToolStripContainer = new ToolStripContainer();
 			((System.ComponentModel.ISupportInitialize)mainSplitContainer).BeginInit();
 			mainSplitContainer.Panel1.SuspendLayout();
 			mainSplitContainer.Panel2.SuspendLayout();
@@ -43,6 +49,10 @@
 			((System.ComponentModel.ISupportInitialize)companiesGrid).BeginInit();
 			applicationsTableLayoutPanel.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)applicationsGrid).BeginInit();
+			statusStrip.SuspendLayout();
+			mainToolStripContainer.BottomToolStripPanel.SuspendLayout();
+			mainToolStripContainer.ContentPanel.SuspendLayout();
+			mainToolStripContainer.SuspendLayout();
 			SuspendLayout();
 			// 
 			// mainSplitContainer
@@ -59,8 +69,8 @@
 			// mainSplitContainer.Panel2
 			// 
 			mainSplitContainer.Panel2.Controls.Add(applicationsTableLayoutPanel);
-			mainSplitContainer.Size = new Size(778, 744);
-			mainSplitContainer.SplitterDistance = 372;
+			mainSplitContainer.Size = new Size(778, 687);
+			mainSplitContainer.SplitterDistance = 343;
 			mainSplitContainer.TabIndex = 0;
 			// 
 			// companiesTableLayoutPanel
@@ -75,7 +85,7 @@
 			companiesTableLayoutPanel.RowCount = 2;
 			companiesTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 40F));
 			companiesTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-			companiesTableLayoutPanel.Size = new Size(778, 372);
+			companiesTableLayoutPanel.Size = new Size(778, 343);
 			companiesTableLayoutPanel.TabIndex = 0;
 			// 
 			// companiesLabel
@@ -97,13 +107,16 @@
 			companiesGrid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
 			companiesGrid.Dock = DockStyle.Fill;
 			companiesGrid.Location = new Point(3, 43);
+			companiesGrid.MultiSelect = false;
 			companiesGrid.Name = "companiesGrid";
 			companiesGrid.ReadOnly = true;
 			companiesGrid.RowHeadersWidth = 62;
 			companiesGrid.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-			companiesGrid.Size = new Size(772, 326);
+			companiesGrid.Size = new Size(772, 297);
 			companiesGrid.TabIndex = 1;
+			companiesGrid.CellContentClick += companiesGrid_CellContentClick;
 			companiesGrid.CellPainting += companiesGrid_CellPainting;
+			companiesGrid.SelectionChanged += companiesGrid_SelectionChanged;
 			// 
 			// applicationsTableLayoutPanel
 			// 
@@ -117,7 +130,7 @@
 			applicationsTableLayoutPanel.RowCount = 2;
 			applicationsTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 40F));
 			applicationsTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-			applicationsTableLayoutPanel.Size = new Size(778, 368);
+			applicationsTableLayoutPanel.Size = new Size(778, 340);
 			applicationsTableLayoutPanel.TabIndex = 1;
 			// 
 			// applicationsLayout
@@ -143,15 +156,69 @@
 			applicationsGrid.ReadOnly = true;
 			applicationsGrid.RowHeadersWidth = 62;
 			applicationsGrid.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-			applicationsGrid.Size = new Size(772, 322);
+			applicationsGrid.Size = new Size(772, 294);
 			applicationsGrid.TabIndex = 1;
+			applicationsGrid.CellPainting += applicationsGrid_CellPainting;
+			// 
+			// statusStrip
+			// 
+			statusStrip.Dock = DockStyle.None;
+			statusStrip.ImageScalingSize = new Size(24, 24);
+			statusStrip.Items.AddRange(new ToolStripItem[] { lastUpdateLabel, statusStripSpacer, refreshButton });
+			statusStrip.Location = new Point(0, 0);
+			statusStrip.Name = "statusStrip";
+			statusStrip.Size = new Size(778, 32);
+			statusStrip.TabIndex = 1;
+			statusStrip.Text = "statusStrip1";
+			// 
+			// lastUpdateLabel
+			// 
+			lastUpdateLabel.Name = "lastUpdateLabel";
+			lastUpdateLabel.Size = new Size(110, 25);
+			lastUpdateLabel.Text = "Last Update:";
+			// 
+			// statusStripSpacer
+			// 
+			statusStripSpacer.Name = "statusStripSpacer";
+			statusStripSpacer.Size = new Size(579, 25);
+			statusStripSpacer.Spring = true;
+			// 
+			// refreshButton
+			// 
+			refreshButton.BackColor = SystemColors.ButtonHighlight;
+			refreshButton.DisplayStyle = ToolStripItemDisplayStyle.Text;
+			refreshButton.Image = (Image)resources.GetObject("refreshButton.Image");
+			refreshButton.ImageTransparentColor = Color.Magenta;
+			refreshButton.Name = "refreshButton";
+			refreshButton.ShowDropDownArrow = false;
+			refreshButton.Size = new Size(74, 29);
+			refreshButton.Text = "Refresh";
+			refreshButton.Click += refreshButton_Click;
+			// 
+			// mainToolStripContainer
+			// 
+			// 
+			// mainToolStripContainer.BottomToolStripPanel
+			// 
+			mainToolStripContainer.BottomToolStripPanel.Controls.Add(statusStrip);
+			// 
+			// mainToolStripContainer.ContentPanel
+			// 
+			mainToolStripContainer.ContentPanel.Controls.Add(mainSplitContainer);
+			mainToolStripContainer.ContentPanel.Size = new Size(778, 687);
+			mainToolStripContainer.Dock = DockStyle.Fill;
+			mainToolStripContainer.Location = new Point(0, 0);
+			mainToolStripContainer.Name = "mainToolStripContainer";
+			mainToolStripContainer.Size = new Size(778, 744);
+			mainToolStripContainer.TabIndex = 2;
+			mainToolStripContainer.Text = "toolStripContainer1";
 			// 
 			// ApplicationViewer
 			// 
 			AutoScaleDimensions = new SizeF(10F, 25F);
 			AutoScaleMode = AutoScaleMode.Font;
 			ClientSize = new Size(778, 744);
-			Controls.Add(mainSplitContainer);
+			Controls.Add(mainToolStripContainer);
 			Name = "ApplicationViewer";
 			ShowIcon = false;
 			Text = "Application Viewer";
@@ -166,6 +233,13 @@
 			applicationsTableLayoutPanel.ResumeLayout(false);
 			applicationsTableLayoutPanel.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)applicationsGrid).EndInit();
+			statusStrip.ResumeLayout(false);
+			statusStrip.PerformLayout();
+			mainToolStripContainer.BottomToolStripPanel.ResumeLayout(false);
+			mainToolStripContainer.BottomToolStripPanel.PerformLayout();
+			mainToolStripContainer.ContentPanel.ResumeLayout(false);
+			mainToolStripContainer.ResumeLayout(false);
+			mainToolStripContainer.PerformLayout();
 			ResumeLayout(false);
 		}
 
@@ -178,5 +252,10 @@
 		private TableLayoutPanel applicationsTableLayoutPanel;
 		private Label applicationsLayout;
 		private DataGridView applicationsGrid;
+		private StatusStrip statusStrip;
+		private ToolStripContainer mainToolStripContainer;
+		private ToolStripStatusLabel lastUpdateLabel;
+		private ToolStripDropDownButton refreshButton;
+		private ToolStripStatusLabel statusStripSpacer;
 	}
 }
