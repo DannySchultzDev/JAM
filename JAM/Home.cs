@@ -159,6 +159,13 @@ namespace JAM
 				{
 					e.Cancel = true;
 				}
+				else
+				{
+					foreach (ApplicationEditor editor in applicationEditors)
+					{
+						editor.TryDestroyCurrTempImage();
+					}
+				}
 			}
 		}
 	}

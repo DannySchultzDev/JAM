@@ -158,6 +158,7 @@
 			applicationsGrid.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
 			applicationsGrid.Size = new Size(772, 294);
 			applicationsGrid.TabIndex = 1;
+			applicationsGrid.CellContentClick += applicationsGrid_CellContentClick;
 			applicationsGrid.CellPainting += applicationsGrid_CellPainting;
 			// 
 			// statusStrip

@@ -206,5 +206,23 @@ namespace JAM
 			}
 			catch { }
 		}
+
+		private void applicationsGrid_CellContentClick(object sender, DataGridViewCellEventArgs e)
+		{
+			try
+			{
+				switch (e.ColumnIndex)
+				{
+					case 3:
+						MessageBox.Show(((Application)applicationsGrid.Rows[e.RowIndex].Tag!).position);
+						break;
+					case 4:
+						ApplicationEditor editor = new ApplicationEditor(EditorType.EDIT_APPLICATION, null, (Application)applicationsGrid.Rows[e.RowIndex].Tag!);
+						editor.Show();
+						break;
+				}
+			}
+			catch { }
+		}
 	}
 }

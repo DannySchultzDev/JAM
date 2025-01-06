@@ -24,7 +24,8 @@ namespace JAM
 		public string images;
 		//resume refers to the resume's file name.
 		public string resume;
-		//coverLetter refers to the cover letter's file name
+		public string coverLetterFileName;
+		//coverLetter refers to the cover letter's data.
 		public string coverLetter;
 		public string info;
 
@@ -42,6 +43,7 @@ namespace JAM
 			string salary,
 			string images,
 			string resume,
+			string coverLetterFileName,
 			string coverLetter,
 			string info)
 		{
@@ -56,6 +58,7 @@ namespace JAM
 			this.salary = salary;
 			this.images = images;
 			this.resume = resume;
+			this.coverLetterFileName = coverLetterFileName;
 			this.coverLetter = coverLetter;
 			this.info = info;
 
@@ -105,6 +108,9 @@ namespace JAM
 						case XmlNodeName.RESUME:
 							resume = nodeData;
 							break;
+						case XmlNodeName.COVER_LETTER_FILE_NAME:
+							coverLetterFileName = nodeData;
+							break;
 						case XmlNodeName.COVER_LETTER:
 							coverLetter = nodeData;
 							break;
@@ -137,6 +143,7 @@ namespace JAM
 				salary = salary ?? "";
 				images = images ?? "";
 				resume = resume ?? "";
+				coverLetterFileName = coverLetterFileName ?? "";
 				coverLetter = coverLetter ?? "";
 				info = info ?? "";
 				guid = guid ?? Guid.NewGuid().ToString();
@@ -163,6 +170,7 @@ namespace JAM
 				FileManager.AddDataToXml(xmlDocument, root, salary, XmlNodeName.SALARY);
 				FileManager.AddDataToXml(xmlDocument, root, images, XmlNodeName.IMAGES);
 				FileManager.AddDataToXml(xmlDocument, root, resume, XmlNodeName.RESUME);
+				FileManager.AddDataToXml(xmlDocument, root, coverLetterFileName, XmlNodeName.COVER_LETTER_FILE_NAME);
 				FileManager.AddDataToXml(xmlDocument, root, coverLetter, XmlNodeName.COVER_LETTER);
 				FileManager.AddDataToXml(xmlDocument, root, info, XmlNodeName.INFO);
 				FileManager.AddDataToXml(xmlDocument, root, guid, XmlNodeName.GUID);

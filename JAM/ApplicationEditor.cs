@@ -76,6 +76,9 @@ namespace JAM
 					case EditorType.CREATE_APPLICATION:
 						mainTabControl.TabPages.Remove(augmentationsTabPage);
 						Text = "Application Creator";
+						foreach (string resume in Home.resumes.Keys)
+							applicationResumeComboBox.Items.Add(resume);
+						applicationResumeComboBox.SelectedIndex = 0;
 						foreach (string companyName in Home.companiesN.Keys)
 							reuseCompanyComboBox.Items.Add(companyName);
 						break;
@@ -100,6 +103,47 @@ namespace JAM
 							companyEmailTextBox.Text = companyToEdit.email;
 							companyPasswordTextBox.Text = companyToEdit.password;
 							companyInfoTextBox.Text = companyToEdit.info;
+						}
+						catch { }
+						break;
+					case EditorType.EDIT_APPLICATION:
+						mainTabControl.TabPages.Remove(companyTabPage);
+						foreach (string resume in Home.resumes.Keys)
+							applicationResumeComboBox.Items.Add(resume);
+						try
+						{
+							applicationPositionTextBox.Text = applicationToEdit!.position;
+							applicationLinkTextBox.Text = applicationToEdit.link;
+							if (applicationTypeComboBox.Items.Contains(applicationToEdit.applicationType))
+								applicationTypeComboBox.Text = applicationToEdit.applicationType;
+							else
+							{
+								applicationTypeComboBox.SelectedIndex = (int)ApplicationType.OTHER;
+								applicationTypeOtherTextBox.Text = applicationToEdit.applicationType;
+							}
+							applicationLocationTextBox.Text = applicationToEdit.location;
+							applicationSalaryTextBox.Text = applicationToEdit.salary;
+							string[] imageStrings = applicationToEdit.images.Split("CONT");
+							foreach (string imageString in imageStrings)
+							{
+								if (string.IsNullOrEmpty(imageString))
+									continue;
+								byte[] imageBytes = EncryptionManager.GetBytes(imageString);
+								using (var memoryStream = new MemoryStream(imageBytes))
+								{
+									Image image = Image.FromStream(memoryStream);
+
+									PictureBox pictureBox = new PictureBox();
+									pictureBox.SizeMode = PictureBoxSizeMode.AutoSize;
+									pictureBox.Image = image;
+									applicationImageFlowLayout.Controls.Add(pictureBox);
+								}
+							}
+							applicationResumeComboBox.Text = applicationToEdit.resume;
+							applicationCoverLetterTextBox.Text = applicationToEdit.coverLetterFileName;
+							if (!string.IsNullOrEmpty(applicationToEdit.coverLetter))
+								applicationCoverLetterTextBox.Tag = EncryptionManager.GetBytes(applicationToEdit.coverLetter);
+							applicationInfoTextBox.Text = applicationToEdit.info;
 						}
 						catch { }
 						break;
@@ -141,7 +185,7 @@ namespace JAM
 			pictureBox.Image = image;
 			pictureBox.Parent = applicationImageFlowLayout;
 			pictureBox.ContextMenuStrip = applicationImageContextMenu;
-			pictureBox.MouseDown += pictureBox_Click;
+			pictureBox.MouseDown += pictureBox_Click!;
 		}
 
 		private void pictureBox_Click(object sender, EventArgs e)
@@ -198,7 +242,7 @@ namespace JAM
 			}
 		}
 
-		private void TryDestroyCurrTempImage()
+		public void TryDestroyCurrTempImage()
 		{
 			if (lastTempPath == null)
 				return;
@@ -208,7 +252,7 @@ namespace JAM
 			}
 			catch
 			{
-				MessageBox.Show("Could not delete the temp image file.");
+				MessageBox.Show("Could not delete the file: " + lastTempPath);
 			}
 		}
 
@@ -264,16 +308,48 @@ namespace JAM
 
 		private void applicationCoverLetterUploadButton_Click(object sender, EventArgs e)
 		{
-			OpenFileDialog openFileDialog = new OpenFileDialog();
-			openFileDialog.Filter = "pdf files (*.pdf)|*.pdf";
-			if (openFileDialog.ShowDialog() != DialogResult.OK)
+			try
+			{
+				OpenFileDialog openFileDialog = new OpenFileDialog();
+				openFileDialog.Filter = "pdf files (*.pdf)|*.pdf";
+				if (openFileDialog.ShowDialog() != DialogResult.OK)
+					return;
+				applicationCoverLetterTextBox.Text = openFileDialog.SafeFileName;
+				applicationCoverLetterTextBox.Tag = File.ReadAllBytes(openFileDialog.FileName);
+			}
+			catch (Exception ex)
+			{
+				applicationCoverLetterTextBox.Text = "None";
+				applicationCoverLetterTextBox.Tag = null;
+				MessageBox.Show("Issue uploading cover letter: " + ex.Message);
+			}
+		}
+		private void applicationCoverLetterOpenButton_Click(object sender, EventArgs e)
+		{
+			if (applicationCoverLetterTextBox.Tag == null)
 				return;
-			applicationCurrentCoverLetterLabel.Text = openFileDialog.FileName;
+
+			TryDestroyCurrTempImage();
+			lastTempPath = Path.Combine(Path.GetTempPath(), applicationCoverLetterTextBox.Text);
+			try
+			{
+				File.WriteAllBytes(lastTempPath, (byte[])applicationCoverLetterTextBox.Tag);
+				Process.Start(new ProcessStartInfo
+				{
+					FileName = lastTempPath,
+					UseShellExecute = true
+				});
+			}
+			catch
+			{
+				MessageBox.Show("Could not open cover letter.");
+			}
 		}
 
 		private void applicationCoverLetterDeleteButton_Click(object sender, EventArgs e)
 		{
-			applicationCurrentCoverLetterLabel.Text = "None";
+			applicationCoverLetterTextBox.Text = "None";
+			applicationCoverLetterTextBox.Tag = null;
 		}
 
 		private void cancelButton_Click(object sender, EventArgs e)
@@ -367,8 +443,8 @@ namespace JAM
 						{
 							resume = applicationResumeComboBox.Text;
 						}
-                        else if (File.Exists(applicationResumeComboBox.Text))
-                        {
+						else if (File.Exists(applicationResumeComboBox.Text))
+						{
 							resume = Path.GetFileName(applicationResumeComboBox.Text);
 							string resumeBaseName = Path.GetFileNameWithoutExtension(resume);
 							string resumeExtension = Path.GetExtension(resume);
@@ -385,13 +461,15 @@ namespace JAM
 							Home.resumes.Add(resume, resumeObj);
 						}
 
+						string coverLetterFileName = "None";
 						string coverLetter = "";
-						if (File.Exists(applicationCurrentCoverLetterLabel.Text))
+						if (applicationCoverLetterTextBox.Tag != null)
 						{
-							coverLetter = EncryptionManager.GetString(File.ReadAllBytes(applicationCurrentCoverLetterLabel.Text));
+							coverLetterFileName = applicationCoverLetterTextBox.Text;
+							coverLetter = EncryptionManager.GetString((byte[])applicationCoverLetterTextBox.Tag);
 						}
 
-                        Application application = new Application(
+						Application application = new Application(
 							companyGuid,
 							DateTime.Now.ToString("MM/dd/yyyy"),
 							ApplicationStatus.SENT.ToString(),
@@ -403,6 +481,7 @@ namespace JAM
 							applicationSalaryTextBox.Text,
 							images.ToString(),
 							resume,
+							coverLetterFileName,
 							coverLetter,
 							applicationInfoTextBox.Text);
 						Home.applications.Add(application.guid, application);
@@ -459,7 +538,7 @@ namespace JAM
 		{
 			if (applicationTypeComboBox.SelectedIndex == (int)ApplicationType.OTHER)
 				applicationTypeOtherTextBox.Enabled = true;
-			else 
+			else
 				applicationTypeOtherTextBox.Enabled = false;
 		}
 	}
@@ -467,7 +546,6 @@ namespace JAM
 	public enum EditorType
 	{
 		CREATE_APPLICATION,
-		AUGMENT_APPLICATION,
 		EDIT_APPLICATION,
 		EDIT_COMPANY
 	}
