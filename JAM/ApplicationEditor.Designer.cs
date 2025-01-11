@@ -61,6 +61,7 @@
 			applicationLinkTextBox = new TextBox();
 			applicationTypeLabel = new Label();
 			applicationTypeComboBox = new ComboBox();
+			applicationTypeOtherLabel = new Label();
 			applicationTypeOtherTextBox = new TextBox();
 			applicationLocationLabel = new Label();
 			applicationLocationTextBox = new TextBox();
@@ -83,17 +84,17 @@
 			applicationInfoLabel = new Label();
 			applicationInfoTextBox = new TextBox();
 			augmentationsTabPage = new TabPage();
-			tableLayoutPanel1 = new TableLayoutPanel();
-			companylabel = new Label();
-			companyComboBox = new ComboBox();
-			creationTimeLabel = new Label();
-			creationTimeDateTimePicker = new DateTimePicker();
-			statusLabel = new Label();
-			statusComboBox = new ComboBox();
-			statusOtherLabel = new Label();
-			statusOtherTextBox = new TextBox();
-			statusTimeLabel = new Label();
-			stausTimeDateTimePicker = new DateTimePicker();
+			augmentationsTableLayout = new TableLayoutPanel();
+			augmentCompanylabel = new Label();
+			augmentCompanyComboBox = new ComboBox();
+			augmentCreationTimeLabel = new Label();
+			augmentCreationTimeDateTimePicker = new DateTimePicker();
+			augmentStatusLabel = new Label();
+			augmentStatusComboBox = new ComboBox();
+			augmentStatusOtherLabel = new Label();
+			augmentStatusOtherTextBox = new TextBox();
+			augmentStatusTimeLabel = new Label();
+			augmentStatusTimeDateTimePicker = new DateTimePicker();
 			saveButton = new Button();
 			cancelButton = new Button();
 			applicationImageContextMenu = new ContextMenuStrip(components);
@@ -108,7 +109,7 @@
 			applicationTabPage.SuspendLayout();
 			applicationTableLayout.SuspendLayout();
 			augmentationsTabPage.SuspendLayout();
-			tableLayoutPanel1.SuspendLayout();
+			augmentationsTableLayout.SuspendLayout();
 			applicationImageContextMenu.SuspendLayout();
 			SuspendLayout();
 			// 
@@ -441,6 +442,7 @@
 			applicationTableLayout.Controls.Add(applicationLinkTextBox, 11, 0);
 			applicationTableLayout.Controls.Add(applicationTypeLabel, 0, 1);
 			applicationTableLayout.Controls.Add(applicationTypeComboBox, 3, 1);
+			applicationTableLayout.Controls.Add(applicationTypeOtherLabel, 0, 2);
 			applicationTableLayout.Controls.Add(applicationTypeOtherTextBox, 3, 2);
 			applicationTableLayout.Controls.Add(applicationLocationLabel, 0, 3);
 			applicationTableLayout.Controls.Add(applicationLocationTextBox, 3, 3);
@@ -526,8 +528,7 @@
 			applicationTypeLabel.Dock = DockStyle.Fill;
 			applicationTypeLabel.Location = new Point(3, 50);
 			applicationTypeLabel.Name = "applicationTypeLabel";
-			applicationTableLayout.SetRowSpan(applicationTypeLabel, 2);
-			applicationTypeLabel.Size = new Size(144, 100);
+			applicationTypeLabel.Size = new Size(144, 50);
 			applicationTypeLabel.TabIndex = 2;
 			applicationTypeLabel.Text = "Application Type:";
 			// 
@@ -538,13 +539,23 @@
 			applicationTableLayout.SetColumnSpan(applicationTypeComboBox, 5);
 			applicationTypeComboBox.Dock = DockStyle.Fill;
 			applicationTypeComboBox.FormattingEnabled = true;
-			applicationTypeComboBox.Items.AddRange(new object[] { "Careers Website", "LinkedIn", "Other" });
 			applicationTypeComboBox.Location = new Point(153, 53);
 			applicationTypeComboBox.Name = "applicationTypeComboBox";
 			applicationTypeComboBox.Size = new Size(246, 33);
 			applicationTypeComboBox.TabIndex = 9;
 			applicationTypeComboBox.SelectedIndexChanged += applicationTypeComboBox_SelectedIndexChanged;
 			applicationTypeComboBox.TextUpdate += StatusUpdated;
+			// 
+			// applicationTypeOtherLabel
+			// 
+			applicationTypeOtherLabel.AutoSize = true;
+			applicationTableLayout.SetColumnSpan(applicationTypeOtherLabel, 3);
+			applicationTypeOtherLabel.Dock = DockStyle.Fill;
+			applicationTypeOtherLabel.Location = new Point(3, 100);
+			applicationTypeOtherLabel.Name = "applicationTypeOtherLabel";
+			applicationTypeOtherLabel.Size = new Size(144, 50);
+			applicationTypeOtherLabel.TabIndex = 31;
+			applicationTypeOtherLabel.Text = "Other:";
 			// 
 			// applicationTypeOtherTextBox
 			// 
@@ -786,7 +797,7 @@
 			// 
 			// augmentationsTabPage
 			// 
-			augmentationsTabPage.Controls.Add(tableLayoutPanel1);
+			augmentationsTabPage.Controls.Add(augmentationsTableLayout);
 			augmentationsTabPage.Location = new Point(4, 34);
 			augmentationsTabPage.Name = "augmentationsTabPage";
 			augmentationsTabPage.Size = new Size(967, 643);
@@ -794,127 +805,137 @@
 			augmentationsTabPage.Text = "Augmentations";
 			augmentationsTabPage.UseVisualStyleBackColor = true;
 			// 
-			// tableLayoutPanel1
+			// augmentationsTableLayout
 			// 
-			tableLayoutPanel1.ColumnCount = 2;
-			tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 200F));
-			tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-			tableLayoutPanel1.Controls.Add(companylabel, 0, 0);
-			tableLayoutPanel1.Controls.Add(companyComboBox, 1, 0);
-			tableLayoutPanel1.Controls.Add(creationTimeLabel, 0, 1);
-			tableLayoutPanel1.Controls.Add(creationTimeDateTimePicker, 1, 1);
-			tableLayoutPanel1.Controls.Add(statusLabel, 0, 2);
-			tableLayoutPanel1.Controls.Add(statusComboBox, 1, 2);
-			tableLayoutPanel1.Controls.Add(statusOtherLabel, 0, 3);
-			tableLayoutPanel1.Controls.Add(statusOtherTextBox, 1, 3);
-			tableLayoutPanel1.Controls.Add(statusTimeLabel, 0, 4);
-			tableLayoutPanel1.Controls.Add(stausTimeDateTimePicker, 1, 4);
-			tableLayoutPanel1.Dock = DockStyle.Fill;
-			tableLayoutPanel1.Location = new Point(0, 0);
-			tableLayoutPanel1.Name = "tableLayoutPanel1";
-			tableLayoutPanel1.RowCount = 6;
-			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 50F));
-			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 50F));
-			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 50F));
-			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 50F));
-			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 50F));
-			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-			tableLayoutPanel1.Size = new Size(967, 643);
-			tableLayoutPanel1.TabIndex = 0;
+			augmentationsTableLayout.ColumnCount = 2;
+			augmentationsTableLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 200F));
+			augmentationsTableLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+			augmentationsTableLayout.Controls.Add(augmentCompanylabel, 0, 0);
+			augmentationsTableLayout.Controls.Add(augmentCompanyComboBox, 1, 0);
+			augmentationsTableLayout.Controls.Add(augmentCreationTimeLabel, 0, 1);
+			augmentationsTableLayout.Controls.Add(augmentCreationTimeDateTimePicker, 1, 1);
+			augmentationsTableLayout.Controls.Add(augmentStatusLabel, 0, 2);
+			augmentationsTableLayout.Controls.Add(augmentStatusComboBox, 1, 2);
+			augmentationsTableLayout.Controls.Add(augmentStatusOtherLabel, 0, 3);
+			augmentationsTableLayout.Controls.Add(augmentStatusOtherTextBox, 1, 3);
+			augmentationsTableLayout.Controls.Add(augmentStatusTimeLabel, 0, 4);
+			augmentationsTableLayout.Controls.Add(augmentStatusTimeDateTimePicker, 1, 4);
+			augmentationsTableLayout.Dock = DockStyle.Fill;
+			augmentationsTableLayout.Location = new Point(0, 0);
+			augmentationsTableLayout.Name = "augmentationsTableLayout";
+			augmentationsTableLayout.RowCount = 6;
+			augmentationsTableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 50F));
+			augmentationsTableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 50F));
+			augmentationsTableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 50F));
+			augmentationsTableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 50F));
+			augmentationsTableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 50F));
+			augmentationsTableLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+			augmentationsTableLayout.Size = new Size(967, 643);
+			augmentationsTableLayout.TabIndex = 0;
 			// 
-			// companylabel
+			// augmentCompanylabel
 			// 
-			companylabel.AutoSize = true;
-			companylabel.Dock = DockStyle.Fill;
-			companylabel.Location = new Point(3, 0);
-			companylabel.Name = "companylabel";
-			companylabel.Size = new Size(194, 50);
-			companylabel.TabIndex = 0;
-			companylabel.Text = "Company:";
+			augmentCompanylabel.AutoSize = true;
+			augmentCompanylabel.Dock = DockStyle.Fill;
+			augmentCompanylabel.Location = new Point(3, 0);
+			augmentCompanylabel.Name = "augmentCompanylabel";
+			augmentCompanylabel.Size = new Size(194, 50);
+			augmentCompanylabel.TabIndex = 0;
+			augmentCompanylabel.Text = "Company:";
 			// 
-			// companyComboBox
+			// augmentCompanyComboBox
 			// 
-			companyComboBox.Dock = DockStyle.Fill;
-			companyComboBox.FormattingEnabled = true;
-			companyComboBox.Location = new Point(203, 3);
-			companyComboBox.Name = "companyComboBox";
-			companyComboBox.Size = new Size(761, 33);
-			companyComboBox.TabIndex = 4;
+			augmentCompanyComboBox.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+			augmentCompanyComboBox.AutoCompleteSource = AutoCompleteSource.ListItems;
+			augmentCompanyComboBox.Dock = DockStyle.Fill;
+			augmentCompanyComboBox.FormattingEnabled = true;
+			augmentCompanyComboBox.Location = new Point(203, 3);
+			augmentCompanyComboBox.Name = "augmentCompanyComboBox";
+			augmentCompanyComboBox.Size = new Size(761, 33);
+			augmentCompanyComboBox.TabIndex = 4;
+			augmentCompanyComboBox.TextUpdate += StatusUpdated;
 			// 
-			// creationTimeLabel
+			// augmentCreationTimeLabel
 			// 
-			creationTimeLabel.AutoSize = true;
-			creationTimeLabel.Dock = DockStyle.Fill;
-			creationTimeLabel.Location = new Point(3, 50);
-			creationTimeLabel.Name = "creationTimeLabel";
-			creationTimeLabel.Size = new Size(194, 50);
-			creationTimeLabel.TabIndex = 1;
-			creationTimeLabel.Text = "Creation Time:";
+			augmentCreationTimeLabel.AutoSize = true;
+			augmentCreationTimeLabel.Dock = DockStyle.Fill;
+			augmentCreationTimeLabel.Location = new Point(3, 50);
+			augmentCreationTimeLabel.Name = "augmentCreationTimeLabel";
+			augmentCreationTimeLabel.Size = new Size(194, 50);
+			augmentCreationTimeLabel.TabIndex = 1;
+			augmentCreationTimeLabel.Text = "Creation Time:";
 			// 
-			// creationTimeDateTimePicker
+			// augmentCreationTimeDateTimePicker
 			// 
-			creationTimeDateTimePicker.Dock = DockStyle.Fill;
-			creationTimeDateTimePicker.Location = new Point(203, 53);
-			creationTimeDateTimePicker.Name = "creationTimeDateTimePicker";
-			creationTimeDateTimePicker.Size = new Size(761, 31);
-			creationTimeDateTimePicker.TabIndex = 5;
+			augmentCreationTimeDateTimePicker.Dock = DockStyle.Fill;
+			augmentCreationTimeDateTimePicker.Location = new Point(203, 53);
+			augmentCreationTimeDateTimePicker.Name = "augmentCreationTimeDateTimePicker";
+			augmentCreationTimeDateTimePicker.Size = new Size(761, 31);
+			augmentCreationTimeDateTimePicker.TabIndex = 5;
+			augmentCreationTimeDateTimePicker.ValueChanged += StatusUpdated;
 			// 
-			// statusLabel
+			// augmentStatusLabel
 			// 
-			statusLabel.AutoSize = true;
-			statusLabel.Dock = DockStyle.Fill;
-			statusLabel.Location = new Point(3, 100);
-			statusLabel.Name = "statusLabel";
-			statusLabel.Size = new Size(194, 50);
-			statusLabel.TabIndex = 2;
-			statusLabel.Text = "Application Status:";
+			augmentStatusLabel.AutoSize = true;
+			augmentStatusLabel.Dock = DockStyle.Fill;
+			augmentStatusLabel.Location = new Point(3, 100);
+			augmentStatusLabel.Name = "augmentStatusLabel";
+			augmentStatusLabel.Size = new Size(194, 50);
+			augmentStatusLabel.TabIndex = 2;
+			augmentStatusLabel.Text = "Application Status:";
 			// 
-			// statusComboBox
+			// augmentStatusComboBox
 			// 
-			statusComboBox.Dock = DockStyle.Fill;
-			statusComboBox.FormattingEnabled = true;
-			statusComboBox.Location = new Point(203, 103);
-			statusComboBox.Name = "statusComboBox";
-			statusComboBox.Size = new Size(761, 33);
-			statusComboBox.TabIndex = 7;
+			augmentStatusComboBox.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+			augmentStatusComboBox.AutoCompleteSource = AutoCompleteSource.ListItems;
+			augmentStatusComboBox.Dock = DockStyle.Fill;
+			augmentStatusComboBox.FormattingEnabled = true;
+			augmentStatusComboBox.Location = new Point(203, 103);
+			augmentStatusComboBox.Name = "augmentStatusComboBox";
+			augmentStatusComboBox.Size = new Size(761, 33);
+			augmentStatusComboBox.TabIndex = 7;
+			augmentStatusComboBox.SelectedIndexChanged += augmentStatusComboBox_SelectedIndexChanged;
+			augmentStatusComboBox.TextUpdate += StatusUpdated;
 			// 
-			// statusOtherLabel
+			// augmentStatusOtherLabel
 			// 
-			statusOtherLabel.AutoSize = true;
-			statusOtherLabel.Dock = DockStyle.Fill;
-			statusOtherLabel.Enabled = false;
-			statusOtherLabel.Location = new Point(3, 150);
-			statusOtherLabel.Name = "statusOtherLabel";
-			statusOtherLabel.Size = new Size(194, 50);
-			statusOtherLabel.TabIndex = 3;
-			statusOtherLabel.Text = "Other:";
+			augmentStatusOtherLabel.AutoSize = true;
+			augmentStatusOtherLabel.Dock = DockStyle.Fill;
+			augmentStatusOtherLabel.Enabled = false;
+			augmentStatusOtherLabel.Location = new Point(3, 150);
+			augmentStatusOtherLabel.Name = "augmentStatusOtherLabel";
+			augmentStatusOtherLabel.Size = new Size(194, 50);
+			augmentStatusOtherLabel.TabIndex = 3;
+			augmentStatusOtherLabel.Text = "Other:";
 			// 
-			// statusOtherTextBox
+			// augmentStatusOtherTextBox
 			// 
-			statusOtherTextBox.Dock = DockStyle.Fill;
-			statusOtherTextBox.Enabled = false;
-			statusOtherTextBox.Location = new Point(203, 153);
-			statusOtherTextBox.Name = "statusOtherTextBox";
-			statusOtherTextBox.Size = new Size(761, 31);
-			statusOtherTextBox.TabIndex = 9;
+			augmentStatusOtherTextBox.Dock = DockStyle.Fill;
+			augmentStatusOtherTextBox.Enabled = false;
+			augmentStatusOtherTextBox.Location = new Point(203, 153);
+			augmentStatusOtherTextBox.Name = "augmentStatusOtherTextBox";
+			augmentStatusOtherTextBox.Size = new Size(761, 31);
+			augmentStatusOtherTextBox.TabIndex = 9;
+			augmentStatusOtherTextBox.TextChanged += augmentStatusOtherTextBox_TextChanged;
 			// 
-			// statusTimeLabel
+			// augmentStatusTimeLabel
 			// 
-			statusTimeLabel.AutoSize = true;
-			statusTimeLabel.Dock = DockStyle.Fill;
-			statusTimeLabel.Location = new Point(3, 200);
-			statusTimeLabel.Name = "statusTimeLabel";
-			statusTimeLabel.Size = new Size(194, 50);
-			statusTimeLabel.TabIndex = 8;
-			statusTimeLabel.Text = "Last Update Time:";
+			augmentStatusTimeLabel.AutoSize = true;
+			augmentStatusTimeLabel.Dock = DockStyle.Fill;
+			augmentStatusTimeLabel.Location = new Point(3, 200);
+			augmentStatusTimeLabel.Name = "augmentStatusTimeLabel";
+			augmentStatusTimeLabel.Size = new Size(194, 50);
+			augmentStatusTimeLabel.TabIndex = 8;
+			augmentStatusTimeLabel.Text = "Last Update Time:";
 			// 
-			// stausTimeDateTimePicker
+			// augmentStausTimeDateTimePicker
 			// 
-			stausTimeDateTimePicker.Dock = DockStyle.Fill;
-			stausTimeDateTimePicker.Location = new Point(203, 203);
-			stausTimeDateTimePicker.Name = "stausTimeDateTimePicker";
-			stausTimeDateTimePicker.Size = new Size(761, 31);
-			stausTimeDateTimePicker.TabIndex = 6;
+			augmentStatusTimeDateTimePicker.Dock = DockStyle.Fill;
+			augmentStatusTimeDateTimePicker.Location = new Point(203, 203);
+			augmentStatusTimeDateTimePicker.Name = "augmentStausTimeDateTimePicker";
+			augmentStatusTimeDateTimePicker.Size = new Size(761, 31);
+			augmentStatusTimeDateTimePicker.TabIndex = 6;
+			augmentStatusTimeDateTimePicker.ValueChanged += StatusUpdated;
 			// 
 			// saveButton
 			// 
@@ -982,8 +1003,8 @@
 			applicationTableLayout.ResumeLayout(false);
 			applicationTableLayout.PerformLayout();
 			augmentationsTabPage.ResumeLayout(false);
-			tableLayoutPanel1.ResumeLayout(false);
-			tableLayoutPanel1.PerformLayout();
+			augmentationsTableLayout.ResumeLayout(false);
+			augmentationsTableLayout.PerformLayout();
 			applicationImageContextMenu.ResumeLayout(false);
 			ResumeLayout(false);
 		}
@@ -1047,18 +1068,19 @@
 		private TextBox applicationSalaryTextBox;
 		private ComboBox applicationResumeComboBox;
 		private TabPage augmentationsTabPage;
-		private TableLayoutPanel tableLayoutPanel1;
-		private Label companylabel;
-		private ComboBox companyComboBox;
-		private Label creationTimeLabel;
-		private Label statusLabel;
-		private Label statusOtherLabel;
-		private DateTimePicker creationTimeDateTimePicker;
-		private DateTimePicker stausTimeDateTimePicker;
-		private ComboBox statusComboBox;
-		private Label statusTimeLabel;
-		private TextBox statusOtherTextBox;
+		private TableLayoutPanel augmentationsTableLayout;
+		private Label augmentCompanylabel;
+		private ComboBox augmentCompanyComboBox;
+		private Label augmentCreationTimeLabel;
+		private Label augmentStatusLabel;
+		private Label augmentStatusOtherLabel;
+		private DateTimePicker augmentCreationTimeDateTimePicker;
+		private DateTimePicker augmentStatusTimeDateTimePicker;
+		private ComboBox augmentStatusComboBox;
+		private Label augmentStatusTimeLabel;
+		private TextBox augmentStatusOtherTextBox;
 		private Button applicationCoverLetterOpenButton;
 		private TextBox applicationCoverLetterTextBox;
+		private Label applicationTypeOtherLabel;
 	}
 }

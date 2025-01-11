@@ -9,6 +9,25 @@ namespace JAM
 {
 	public class Application
 	{
+		public static readonly Dictionary<ApplicationType, string> ApplicationTypes = new Dictionary<ApplicationType, string>
+		{
+			{ApplicationType.CAREERS_WEBSITE, "Careers Website" },
+			{ApplicationType.LINKEDIN, "LinkedIn" },
+			{ApplicationType.OTHER, "Other" }
+		};
+
+		public static readonly Dictionary<ApplicationStatus, string> ApplicationStatuses = new Dictionary<ApplicationStatus, string>
+		{
+			{ApplicationStatus.NOT_SENT, "Not Sent" },
+			{ApplicationStatus.SENT, "Sent" },
+			{ApplicationStatus.AUTO_REVIEWED, "Auto Reviewed" },
+			{ApplicationStatus.MANUALY_REVIEWED, "Manualy Reviewed" },
+			{ApplicationStatus.INTERVIEWING, "Interviewing" },
+			{ApplicationStatus.HIRED, "Hired" },
+			{ApplicationStatus.FLUSHED, "Flushed" },
+			{ApplicationStatus.OTHER, "Other" }
+		};
+
 		public string company;
 		public string creationTime;
 		public string status;
@@ -186,7 +205,6 @@ namespace JAM
 
 	public enum ApplicationType
 	{
-		NONE = -1,
 		CAREERS_WEBSITE = 0,
 		LINKEDIN = 1,
 		OTHER = 2,
@@ -194,13 +212,13 @@ namespace JAM
 
 	public enum ApplicationStatus
 	{
-		NOT_SENT = -1,
-		SENT = 0,
-		AUTO_REVIEWED = 1,
-		MANUALY_REVIEWED = 2,
-		INTERVIEWING = 3,
-		HIRED = 4,
-		FLUSHED = 5,
-		OTHER = 6
+		NOT_SENT = 0,
+		SENT = 1,
+		AUTO_REVIEWED = 2,
+		MANUALY_REVIEWED = 3,
+		INTERVIEWING = 4,
+		HIRED = 5,
+		FLUSHED = 6,
+		OTHER = 7
 	}
 }

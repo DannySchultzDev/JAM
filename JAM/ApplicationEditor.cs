@@ -8,6 +8,7 @@ using System.Drawing.Text;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using System.Windows.Forms;
 
 namespace JAM
@@ -28,6 +29,7 @@ namespace JAM
 		//If the form is closing due to it being a duplicate, it should not remove the original from the dictionary.
 		private bool removeFromDictionary = true;
 
+		#region Lifecycle
 		public ApplicationEditor(EditorType editorType, Company? companyToEdit, Application? applicationToEdit)
 		{
 			this.editorType = editorType;
@@ -76,6 +78,9 @@ namespace JAM
 					case EditorType.CREATE_APPLICATION:
 						mainTabControl.TabPages.Remove(augmentationsTabPage);
 						Text = "Application Creator";
+						foreach (ApplicationType applicationType in Enum.GetValues(typeof(ApplicationType)))
+							applicationTypeComboBox.Items.Add(Application.ApplicationTypes.GetValueOrDefault(applicationType, "Invalid Application Type"));
+						applicationTypeComboBox.SelectedIndex = (int)ApplicationType.CAREERS_WEBSITE;
 						foreach (string resume in Home.resumes.Keys)
 							applicationResumeComboBox.Items.Add(resume);
 						applicationResumeComboBox.SelectedIndex = 0;
@@ -108,19 +113,24 @@ namespace JAM
 						break;
 					case EditorType.EDIT_APPLICATION:
 						mainTabControl.TabPages.Remove(companyTabPage);
+						mainTabControl.SelectedTab = augmentationsTabPage;
 						foreach (string resume in Home.resumes.Keys)
 							applicationResumeComboBox.Items.Add(resume);
 						try
 						{
 							applicationPositionTextBox.Text = applicationToEdit!.position;
 							applicationLinkTextBox.Text = applicationToEdit.link;
-							if (applicationTypeComboBox.Items.Contains(applicationToEdit.applicationType))
-								applicationTypeComboBox.Text = applicationToEdit.applicationType;
+
+							foreach(ApplicationType applicationType in Enum.GetValues(typeof(ApplicationType)))
+								applicationTypeComboBox.Items.Add(Application.ApplicationTypes.GetValueOrDefault(applicationType, "Invalid Application Type"));
+							if (Enum.IsDefined(typeof(ApplicationType), applicationToEdit.applicationType))
+								applicationTypeComboBox.SelectedIndex = (int)Enum.Parse<ApplicationType>(applicationToEdit.applicationType);
 							else
 							{
 								applicationTypeComboBox.SelectedIndex = (int)ApplicationType.OTHER;
 								applicationTypeOtherTextBox.Text = applicationToEdit.applicationType;
 							}
+
 							applicationLocationTextBox.Text = applicationToEdit.location;
 							applicationSalaryTextBox.Text = applicationToEdit.salary;
 							string[] imageStrings = applicationToEdit.images.Split("CONT");
@@ -144,6 +154,22 @@ namespace JAM
 							if (!string.IsNullOrEmpty(applicationToEdit.coverLetter))
 								applicationCoverLetterTextBox.Tag = EncryptionManager.GetBytes(applicationToEdit.coverLetter);
 							applicationInfoTextBox.Text = applicationToEdit.info;
+							foreach (string companyName in Home.companiesN.Keys)
+								augmentCompanyComboBox.Items.Add(companyName);
+							Company? company = Home.companiesG.GetValueOrDefault(applicationToEdit.company);
+							if (company != null)
+								augmentCompanyComboBox.Text = company.name;
+							augmentCreationTimeDateTimePicker.Value = DateTime.Parse(applicationToEdit.creationTime);
+							foreach (ApplicationStatus status in Enum.GetValues(typeof(ApplicationStatus)))
+								augmentStatusComboBox.Items.Add(Application.ApplicationStatuses.GetValueOrDefault(status, "Invalid Application Status"));
+							if (Enum.IsDefined(typeof(ApplicationStatus), applicationToEdit.status))
+								augmentStatusComboBox.SelectedIndex = (int)Enum.Parse<ApplicationStatus>(applicationToEdit.status);
+							else
+							{
+								augmentStatusComboBox.SelectedIndex = (int)ApplicationStatus.OTHER;
+								augmentStatusOtherTextBox.Text = applicationToEdit.status;
+							}
+							augmentStatusTimeDateTimePicker.Value = DateTime.Parse(applicationToEdit.statusTime);
 						}
 						catch { }
 						break;
@@ -157,6 +183,29 @@ namespace JAM
 				MessageBox.Show("Error loading application editor: " + ex.Message);
 			}
 		}
+
+		private void CloseApplicationEditor(object sender, FormClosingEventArgs e)
+		{
+			TryDestroyCurrTempImage();
+
+			if (statusChanged == true)
+			{
+				if (MessageBox.Show("You have made changes. Discard changes and close editor?",
+					"Close?", MessageBoxButtons.OKCancel) != DialogResult.OK)
+				{
+					e.Cancel = true;
+				}
+			}
+			if (!e.Cancel)
+			{
+				Home.applicationEditors.Remove(this);
+				if (removeFromDictionary && companyToEdit != null)
+					activeCompanies.Remove(companyToEdit);
+				if (removeFromDictionary && applicationToEdit != null)
+					activeApplications.Remove(applicationToEdit);
+			}
+		}
+		#endregion Lifecycle
 
 		private void reuseCompanyCheckBox_CheckedChanged(object sender, EventArgs e)
 		{
@@ -263,28 +312,6 @@ namespace JAM
 			applicationImageFlowLayout.Controls.Remove(lastClickedImage);
 		}
 
-		private void CloseApplicationEditor(object sender, FormClosingEventArgs e)
-		{
-			TryDestroyCurrTempImage();
-
-			if (statusChanged == true)
-			{
-				if (MessageBox.Show("You have made changes. Discard changes and close editor?",
-					"Close?", MessageBoxButtons.OKCancel) != DialogResult.OK)
-				{
-					e.Cancel = true;
-				}
-			}
-			if (!e.Cancel)
-			{
-				Home.applicationEditors.Remove(this);
-				if (removeFromDictionary && companyToEdit != null)
-					activeCompanies.Remove(companyToEdit);
-				if (removeFromDictionary && applicationToEdit != null)
-					activeApplications.Remove(applicationToEdit);
-			}
-		}
-
 		private void applicationImageDeleteButton_Click(object sender, EventArgs e)
 		{
 			if (applicationImageFlowLayout.Controls.Count == 0)
@@ -377,116 +404,76 @@ namespace JAM
 				switch (editorType)
 				{
 					case EditorType.CREATE_APPLICATION:
-						if (reuseCompanyCheckBox.Checked && !Home.companiesN.ContainsKey(reuseCompanyComboBox.Text))
-							errorList.Add("Company to reuse is not valid.");
-
-						if ((!reuseCompanyCheckBox.Checked) && Home.companiesN.ContainsKey(companyNameTextBox.Text))
-							errorList.Add("Company created has the same name as a pre-existing company.");
-
-						if (errorList.Count > 0)
-							break;
-
-						string applicationType;
-						if (applicationTypeComboBox.SelectedIndex == (int)ApplicationType.OTHER)
-							applicationType = applicationTypeOtherTextBox.Text;
-						else
-							applicationType = ((ApplicationType)applicationTypeComboBox.SelectedIndex).ToString();
-
-						string companyGuid = "";
-						if (!reuseCompanyCheckBox.Checked)
 						{
-							Company company = new Company(
-								companyNameTextBox.Text,
-								companyWebsiteTextBox.Text,
-								companyCareersWebsiteTextBox.Text,
-								companyCareersHomeTextBox.Text,
-								companyEmailTextBox.Text,
-								companyPasswordTextBox.Text,
-								companyInfoTextBox.Text);
-							FileManager.SaveXml(company.ConvertToXml(), FileType.COMPANY, company.guid + ".xml");
-							Home.companiesN.Add(company.name, company);
-							Home.companiesG.Add(company.guid, company);
-							companyGuid = company.guid;
-						}
-						else
-						{
-							if (Home.companiesN.TryGetValue(reuseCompanyComboBox.Text, out Company? company))
+							if (reuseCompanyCheckBox.Checked && !Home.companiesN.ContainsKey(reuseCompanyComboBox.Text))
+								errorList.Add("Company to reuse is not valid.");
+
+							if ((!reuseCompanyCheckBox.Checked) && Home.companiesN.ContainsKey(companyNameTextBox.Text))
+								errorList.Add("Company created has the same name as a pre-existing company.");
+
+							if (errorList.Count > 0)
+								break;
+
+							string companyGuid = "";
+							if (!reuseCompanyCheckBox.Checked)
 							{
+								Company company = new Company(
+									companyNameTextBox.Text,
+									companyWebsiteTextBox.Text,
+									companyCareersWebsiteTextBox.Text,
+									companyCareersHomeTextBox.Text,
+									companyEmailTextBox.Text,
+									companyPasswordTextBox.Text,
+									companyInfoTextBox.Text);
+								FileManager.SaveXml(company.ConvertToXml(), FileType.COMPANY, company.guid + ".xml");
+								Home.companiesN.Add(company.name, company);
+								Home.companiesG.Add(company.guid, company);
 								companyGuid = company.guid;
 							}
 							else
 							{
-								//This should be caught by error list's pre checks.
-								throw new ArgumentException("Tried to reuse a non-existant company.");
-							}
-						}
-
-						StringBuilder images = new StringBuilder();
-						foreach (Control control in applicationImageFlowLayout.Controls)
-						{
-							if (!(control is PictureBox))
-								continue;
-							Image image = ((PictureBox)control).Image;
-							byte[] imageBytes;
-							using (var memoryStream = new MemoryStream())
-							{
-								image.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Png);
-								imageBytes = memoryStream.ToArray();
-							}
-							string imageString = EncryptionManager.GetString(imageBytes);
-							images.Append(imageString);
-							images.Append("CONT");
-						}
-
-						string resume = "";
-						if (Home.resumes.Keys.Contains(applicationResumeComboBox.Text))
-						{
-							resume = applicationResumeComboBox.Text;
-						}
-						else if (File.Exists(applicationResumeComboBox.Text))
-						{
-							resume = Path.GetFileName(applicationResumeComboBox.Text);
-							string resumeBaseName = Path.GetFileNameWithoutExtension(resume);
-							string resumeExtension = Path.GetExtension(resume);
-							int counter = 0;
-							while (Home.resumes.Keys.Contains(resume))
-							{
-								++counter;
-								resume = resumeBaseName + "(" + counter + ")" + resumeExtension;
+								if (Home.companiesN.TryGetValue(reuseCompanyComboBox.Text, out Company? company))
+								{
+									companyGuid = company.guid;
+								}
+								else
+								{
+									//This should be caught by error list's pre checks.
+									throw new ArgumentException("Tried to reuse a non-existant company.");
+								}
 							}
 
-							string resumeData = EncryptionManager.GetString(File.ReadAllBytes(applicationResumeComboBox.Text));
-							Resume resumeObj = new Resume(resume, resumeData);
-							FileManager.SaveXml(resumeObj.ConvertToXml(), FileType.RESUMES, resumeObj.guid + ".xml");
-							Home.resumes.Add(resume, resumeObj);
-						}
+							ScrapeApplicationTab(
+								out string position,
+								out string link,
+								out string applicationType,
+								out string location,
+								out string salary,
+								out string resume,
+								out string coverLetterFileName,
+								out string coverLetter,
+								out string info,
+								out string images);
 
-						string coverLetterFileName = "None";
-						string coverLetter = "";
-						if (applicationCoverLetterTextBox.Tag != null)
-						{
-							coverLetterFileName = applicationCoverLetterTextBox.Text;
-							coverLetter = EncryptionManager.GetString((byte[])applicationCoverLetterTextBox.Tag);
+							Application application = new Application(
+								companyGuid,
+								DateTime.Now.ToString("MM/dd/yyyy"),
+								ApplicationStatus.SENT.ToString(),
+								DateTime.Now.ToString("MM/dd/yyyy"),
+								position,
+								link,
+								applicationType,
+								location,
+								salary,
+								images,
+								resume,
+								coverLetterFileName,
+								coverLetter,
+								info);
+							Home.applications.Add(application.guid, application);
+							FileManager.SaveXml(application.ConvertToXml(), FileType.APPLICATION, application.guid + ".xml");
+							break;
 						}
-
-						Application application = new Application(
-							companyGuid,
-							DateTime.Now.ToString("MM/dd/yyyy"),
-							ApplicationStatus.SENT.ToString(),
-							DateTime.Now.ToString("MM/dd/yyyy"),
-							applicationPositionTextBox.Text,
-							applicationLinkTextBox.Text,
-							applicationType,
-							applicationLocationTextBox.Text,
-							applicationSalaryTextBox.Text,
-							images.ToString(),
-							resume,
-							coverLetterFileName,
-							coverLetter,
-							applicationInfoTextBox.Text);
-						Home.applications.Add(application.guid, application);
-						FileManager.SaveXml(application.ConvertToXml(), FileType.APPLICATION, application.guid + ".xml");
-						break;
 					case EditorType.EDIT_COMPANY:
 						if (!companyNameTextBox.Text.Equals(companyToEdit!.name) && Home.companiesN.ContainsKey(companyNameTextBox.Text))
 							errorList.Add("Company created has the same name as a pre-existing company.");
@@ -510,6 +497,59 @@ namespace JAM
 						Home.companiesN.Add(companyToEdit.name, companyToEdit);
 
 						break;
+					case EditorType.EDIT_APPLICATION:
+						{
+							if (augmentCompanyComboBox.SelectedIndex == -1)
+								errorList.Add("Invalid company selected in augmentations");
+							if (applicationToEdit == null)
+								errorList.Add("Application to edit is null");
+
+							if (errorList.Count > 0)
+								break;
+
+							ScrapeApplicationTab(
+								out string position,
+								out string link,
+								out string applicationType,
+								out string location,
+								out string salary,
+								out string resume,
+								out string coverLetterFileName,
+								out string coverLetter,
+								out string info,
+								out string images);
+
+							applicationToEdit!.position = position;
+							applicationToEdit.link = link;
+							applicationToEdit.applicationType = applicationType;
+							applicationToEdit.location = location;
+							applicationToEdit.salary = salary;
+							applicationToEdit.resume = resume;
+							applicationToEdit.coverLetterFileName = coverLetterFileName;
+							applicationToEdit.coverLetter = coverLetter;
+							applicationToEdit.info = info;
+							applicationToEdit.images = images;
+
+							Company? company = null;
+							Home.companiesN.TryGetValue(augmentCompanyComboBox.Text, out company);
+							if (company == null)
+								throw new Exception("Company was null");
+							applicationToEdit.company = company.guid;
+
+							applicationToEdit.creationTime = augmentCreationTimeDateTimePicker.Value.ToString("MM/dd/yyyy");
+
+							if (augmentStatusComboBox.SelectedIndex == (int)ApplicationStatus.OTHER)
+								applicationToEdit.status = augmentStatusOtherTextBox.Text;
+							else
+								applicationToEdit.status = ((ApplicationStatus)augmentStatusComboBox.SelectedIndex).ToString();
+
+							applicationToEdit.statusTime = augmentStatusTimeDateTimePicker.Value.ToString("MM/dd/yyyy");
+
+							FileManager.SaveXml(applicationToEdit.ConvertToXml(), FileType.APPLICATION, applicationToEdit.guid + ".xml");
+							Home.applications[applicationToEdit.guid] = applicationToEdit;
+
+							break;
+						}
 					default:
 						throw new NotImplementedException();
 				}
@@ -534,12 +574,122 @@ namespace JAM
 			Close();
 		}
 
+		private void ScrapeApplicationTab (
+			out string position,
+			out string link,
+			out string applicationType,
+			out string location,
+			out string salary,
+			out string resume,
+			out string coverLetterFileName,
+			out string coverLetter,
+			out string info,
+			out string images)
+		{
+			position = applicationPositionTextBox.Text;
+
+			link = applicationLinkTextBox.Text;
+
+			if (applicationTypeComboBox.SelectedIndex == (int)ApplicationType.OTHER)
+				applicationType = applicationTypeOtherTextBox.Text;
+			else
+				applicationType = ((ApplicationType)applicationTypeComboBox.SelectedIndex).ToString();
+
+			location = applicationLocationTextBox.Text;
+
+			salary = applicationSalaryTextBox.Text;
+
+			if (Home.resumes.Keys.Contains(applicationResumeComboBox.Text))
+			{
+				resume = applicationResumeComboBox.Text;
+			}
+			else if (File.Exists(applicationResumeComboBox.Text))
+			{
+				resume = Path.GetFileName(applicationResumeComboBox.Text);
+				string resumeBaseName = Path.GetFileNameWithoutExtension(resume);
+				string resumeExtension = Path.GetExtension(resume);
+				int counter = 0;
+				while (Home.resumes.Keys.Contains(resume))
+				{
+					++counter;
+					resume = resumeBaseName + "(" + counter + ")" + resumeExtension;
+				}
+
+				string resumeData = EncryptionManager.GetString(File.ReadAllBytes(applicationResumeComboBox.Text));
+				Resume resumeObj = new Resume(resume, resumeData);
+				FileManager.SaveXml(resumeObj.ConvertToXml(), FileType.RESUMES, resumeObj.guid + ".xml");
+				Home.resumes.Add(resume, resumeObj);
+			}
+			else
+			{
+				resume = "None";
+			}
+
+			if (applicationCoverLetterTextBox.Tag != null)
+			{
+				coverLetterFileName = applicationCoverLetterTextBox.Text;
+				coverLetter = EncryptionManager.GetString((byte[])applicationCoverLetterTextBox.Tag);
+			}
+			else
+			{
+				coverLetterFileName = "None";
+				coverLetter = "";
+			}
+
+			info = applicationInfoTextBox.Text;
+
+			StringBuilder imagesSB = new StringBuilder();
+			foreach (Control control in applicationImageFlowLayout.Controls)
+			{
+				if (!(control is PictureBox))
+					continue;
+				Image image = ((PictureBox)control).Image;
+				byte[] imageBytes;
+				using (var memoryStream = new MemoryStream())
+				{
+					image.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Png);
+					imageBytes = memoryStream.ToArray();
+				}
+				string imageString = EncryptionManager.GetString(imageBytes);
+				imagesSB.Append(imageString);
+				imagesSB.Append("CONT");
+			}
+			images = imagesSB.ToString();
+		}
+
 		private void applicationTypeComboBox_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (applicationTypeComboBox.SelectedIndex == (int)ApplicationType.OTHER)
+			{
+				applicationTypeOtherLabel.Enabled = true;
 				applicationTypeOtherTextBox.Enabled = true;
+			}
 			else
+			{
+				applicationTypeOtherLabel.Enabled = false;
 				applicationTypeOtherTextBox.Enabled = false;
+			}
+		}
+
+		private void augmentStatusComboBox_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			if (augmentStatusComboBox.SelectedIndex == (int)ApplicationStatus.OTHER)
+			{
+				augmentStatusOtherLabel.Enabled = true;
+				augmentStatusOtherTextBox.Enabled = true;
+			}
+			else
+			{
+				augmentStatusOtherLabel.Enabled = false;
+				augmentStatusOtherTextBox.Enabled = false;
+			}
+			augmentStatusTimeDateTimePicker.Value = DateTime.Now;
+		}
+
+		private void augmentStatusOtherTextBox_TextChanged(object sender, EventArgs e)
+		{
+			augmentStatusTimeDateTimePicker.Value = DateTime.Now;
+			StatusUpdated(sender, e);
 		}
 	}
 
