@@ -661,6 +661,9 @@ namespace JAM
 								info);
 							Home.applications.Add(application.guid, application);
 							FileManager.SaveXml(application.ConvertToXml(), FileType.APPLICATION, application.guid + ".xml");
+
+							ApplicationSelector.WarnDataUpdate();
+
 							break;
 						}
 					case EditorType.EDIT_COMPANY:
@@ -684,6 +687,8 @@ namespace JAM
 						Home.companiesG[companyToEdit.guid] = companyToEdit;
 						Home.companiesN.Remove(originalName);
 						Home.companiesN.Add(companyToEdit.name, companyToEdit);
+
+						ApplicationSelector.WarnDataUpdate();
 
 						break;
 					case EditorType.EDIT_APPLICATION:
@@ -736,6 +741,8 @@ namespace JAM
 
 							FileManager.SaveXml(applicationToEdit.ConvertToXml(), FileType.APPLICATION, applicationToEdit.guid + ".xml");
 							Home.applications[applicationToEdit.guid] = applicationToEdit;
+
+							ApplicationSelector.WarnDataUpdate();
 
 							break;
 						}

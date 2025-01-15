@@ -146,7 +146,7 @@ namespace JAM
 
 		private void viewApplicationsButton_Click(object sender, EventArgs e)
 		{
-			ApplicationViewer viewer = new ApplicationViewer();
+			ApplicationSelector viewer = new ApplicationSelector();
 			viewer.Show();
 		}
 

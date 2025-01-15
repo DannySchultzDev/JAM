@@ -10,19 +10,34 @@ using System.Windows.Forms;
 
 namespace JAM
 {
-	public partial class ApplicationViewer : Form
+	public partial class ApplicationSelector : Form
 	{
+		private static ApplicationSelector? instance = null;
+
 		private Dictionary<Company, List<Application>> companyApplicationDictionary = new Dictionary<Company, List<Application>>();
 		private Image viewImage = Properties.Resources.Open;
 		private Image editImage = Properties.Resources.Edit;
 
-		public ApplicationViewer()
+		public ApplicationSelector()
 		{
 			InitializeComponent();
 		}
 
 		private void ApplicationViewer_Load(object sender, EventArgs e)
 		{
+			if (instance != null)
+			{
+				instance.Focus();
+				if (instance.WindowState == FormWindowState.Minimized)
+					instance.WindowState = FormWindowState.Normal;
+				Close();
+				return;
+			}
+			else
+			{
+				instance = this;
+			}
+
 			DataGridViewColumn companyNameColumn = new DataGridViewColumn();
 			companyNameColumn.Name = "Name";
 			companyNameColumn.HeaderText = "Name";
@@ -101,6 +116,7 @@ namespace JAM
 			UpdateCompanyRows();
 			UpdateApplicationsRows();
 			lastUpdateLabel.Text = "Last update: " + DateTime.Now.ToString();
+			refreshButton.DisplayStyle = ToolStripItemDisplayStyle.Text;
 		}
 
 		private void UpdateCompanyRows()
@@ -223,6 +239,22 @@ namespace JAM
 				}
 			}
 			catch { }
+		}
+
+		private void ApplicationSelector_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			if (this == instance)
+				instance = null;
+		}
+
+		/// <summary>
+		/// Warn the user that the data they are viewing is out of date if an application selector is open.
+		/// </summary>
+		public static void WarnDataUpdate()
+		{
+			if (instance == null)
+				return;
+			instance.refreshButton.DisplayStyle = ToolStripItemDisplayStyle.ImageAndText;
 		}
 	}
 }

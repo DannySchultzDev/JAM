@@ -1,6 +1,6 @@
 ﻿namespace JAM
 {
-	partial class ApplicationViewer
+	partial class ApplicationSelector
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -28,7 +28,6 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ApplicationViewer));
 			mainSplitContainer = new SplitContainer();
 			companiesTableLayoutPanel = new TableLayoutPanel();
 			companiesLabel = new Label();
@@ -181,19 +180,19 @@
 			// statusStripSpacer
 			// 
 			statusStripSpacer.Name = "statusStripSpacer";
-			statusStripSpacer.Size = new Size(579, 25);
+			statusStripSpacer.Size = new Size(533, 25);
 			statusStripSpacer.Spring = true;
 			// 
 			// refreshButton
 			// 
 			refreshButton.BackColor = SystemColors.ButtonHighlight;
-			refreshButton.DisplayStyle = ToolStripItemDisplayStyle.Text;
-			refreshButton.Image = (Image)resources.GetObject("refreshButton.Image");
+			refreshButton.Image = Properties.Resources.IntellisenseWarning;
 			refreshButton.ImageTransparentColor = Color.Magenta;
 			refreshButton.Name = "refreshButton";
 			refreshButton.ShowDropDownArrow = false;
-			refreshButton.Size = new Size(74, 29);
+			refreshButton.Size = new Size(98, 29);
 			refreshButton.Text = "Refresh";
+			refreshButton.TextImageRelation = TextImageRelation.TextBeforeImage;
 			refreshButton.Click += refreshButton_Click;
 			// 
 			// mainToolStripContainer
@@ -214,15 +213,16 @@
 			mainToolStripContainer.TabIndex = 2;
 			mainToolStripContainer.Text = "toolStripContainer1";
 			// 
-			// ApplicationViewer
+			// ApplicationSelector
 			// 
 			AutoScaleDimensions = new SizeF(10F, 25F);
 			AutoScaleMode = AutoScaleMode.Font;
 			ClientSize = new Size(778, 744);
 			Controls.Add(mainToolStripContainer);
-			Name = "ApplicationViewer";
+			Name = "ApplicationSelector";
 			ShowIcon = false;
-			Text = "Application Viewer";
+			Text = "Application Selector";
+			FormClosing += ApplicationSelector_FormClosing;
 			Load += ApplicationViewer_Load;
 			mainSplitContainer.Panel1.ResumeLayout(false);
 			mainSplitContainer.Panel2.ResumeLayout(false);
