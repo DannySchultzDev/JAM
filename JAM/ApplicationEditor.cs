@@ -15,21 +15,55 @@ namespace JAM
 {
 	public partial class ApplicationEditor : Form
 	{
+		#region Variables
+		/// <summary>
+		/// Used by the context menu to know the image to affect.
+		/// </summary>
 		private PictureBox? lastClickedImage = null;
+		/// <summary>
+		/// The path of the last image viewed. The image at this path is destroyed when the next image is loaded.
+		/// </summary>
 		private string? lastTempPath = null;
 
+		/// <summary>
+		/// Used to warn user if there is unsaved progress.
+		/// </summary>
 		private bool statusChanged = false;
 
+		/// <summary>
+		/// Used for determening how to load and how to save.
+		/// </summary>
 		private EditorType editorType;
+		/// <summary>
+		/// Used to load defaults, and to augment on save.
+		/// </summary>
 		private Company? companyToEdit;
+		/// <summary>
+		/// Used to load defaults, and to augment on save.
+		/// </summary>
 		private Application? applicationToEdit;
 
+		/// <summary>
+		/// Used on load to determine if an editor already exists for this company.
+		/// </summary>
 		private static Dictionary<Company, ApplicationEditor> activeCompanies = new Dictionary<Company, ApplicationEditor>();
+		/// <summary>
+		/// Used on load to determine if an editor already exists for this application.
+		/// </summary>
 		private static Dictionary<Application, ApplicationEditor> activeApplications = new Dictionary<Application, ApplicationEditor>();
-		//If the form is closing due to it being a duplicate, it should not remove the original from the dictionary.
+		/// <summary>
+		/// Prevent a duplicate that is being closed from removing the original form from the active dictionary.
+		/// </summary>
 		private bool removeFromDictionary = true;
+		#endregion Variables
 
 		#region Lifecycle
+		/// <summary>
+		/// Standard constructor.
+		/// </summary>
+		/// <param name="editorType">Type of editor being loaded.</param>
+		/// <param name="companyToEdit">When editing a company, which company to load.</param>
+		/// <param name="applicationToEdit">When editing an application, which application to load.</param>
 		public ApplicationEditor(EditorType editorType, Company? companyToEdit, Application? applicationToEdit)
 		{
 			this.editorType = editorType;
@@ -41,7 +75,13 @@ namespace JAM
 			InitializeComponent();
 		}
 
-		private void ApplicationEditor_Load(object sender, EventArgs e)
+		/// <summary>
+		/// Load event for the application editor. <br/>
+		/// Will load differently depending on editor type.
+		/// </summary>
+		/// <param name="sender">Unused</param>
+		/// <param name="e">Unused</param>
+		private void LoadApplicationEditor(object sender, EventArgs e)
 		{
 			if (companyToEdit != null)
 			{
@@ -184,6 +224,11 @@ namespace JAM
 			}
 		}
 
+		/// <summary>
+		/// Close event for the application editor.
+		/// </summary>
+		/// <param name="sender">Unused</param>
+		/// <param name="e">Unused</param>
 		private void CloseApplicationEditor(object sender, FormClosingEventArgs e)
 		{
 			TryDestroyCurrTempImage();
@@ -207,6 +252,12 @@ namespace JAM
 		}
 		#endregion Lifecycle
 
+		#region Company
+		/// <summary>
+		/// Uses the check state to determine whether to enable the new company section, or the reuse company section.
+		/// </summary>
+		/// <param name="sender">Unused</param>
+		/// <param name="e">Unused</param>
 		private void reuseCompanyCheckBox_CheckedChanged(object sender, EventArgs e)
 		{
 			reuseCompanyComboBox.Enabled = reuseCompanyCheckBox.Checked;
@@ -216,6 +267,11 @@ namespace JAM
 			statusChanged = true;
 		}
 
+		/// <summary>
+		/// Either reveals or hides the companies passward.
+		/// </summary>
+		/// <param name="sender">Unused</param>
+		/// <param name="e">Unused</param>
 		private void companyPasswordViewButton_Click(object sender, EventArgs e)
 		{
 			companyPasswordTextBox.PasswordChar =
@@ -226,33 +282,27 @@ namespace JAM
 				JAM.Properties.Resources.CloakOrHide :
 				JAM.Properties.Resources.Visible;
 		}
+		#endregion Company
 
-		private void addBackupImage(Image image)
-		{
-			PictureBox pictureBox = new PictureBox();
-			pictureBox.SizeMode = PictureBoxSizeMode.AutoSize;
-			pictureBox.Image = image;
-			pictureBox.Parent = applicationImageFlowLayout;
-			pictureBox.ContextMenuStrip = applicationImageContextMenu;
-			pictureBox.MouseDown += pictureBox_Click!;
-		}
-
-		private void pictureBox_Click(object sender, EventArgs e)
-		{
-			if (sender is PictureBox)
-			{
-				lastClickedImage = (PictureBox)sender;
-			}
-		}
-
+		#region Application Image
+		/// <summary>
+		/// Pastes an image from the user's clipboard into the images flow view.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void applicationImagePasteButton_Click(object sender, EventArgs e)
 		{
 			Image? image = Clipboard.GetImage();
 			if (image == null)
 				return;
-			addBackupImage(image);
+			AddBackupImage(image);
 		}
 
+		/// <summary>
+		/// Lets the user select an image from their files to upload to the images flow view.
+		/// </summary>
+		/// <param name="sender">Unused</param>
+		/// <param name="e">Unused</param>
 		private void applicationImageUploadButton_Click(object sender, EventArgs e)
 		{
 			OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -262,7 +312,7 @@ namespace JAM
 			try
 			{
 				Image image = Image.FromFile(openFileDialog.FileName);
-				addBackupImage(image);
+				AddBackupImage(image);
 			}
 			catch
 			{
@@ -270,6 +320,47 @@ namespace JAM
 			}
 		}
 
+		/// <summary>
+		/// Helper function that adds an image to the images flow view.
+		/// </summary>
+		/// <param name="image">The image to add to the images flow view</param>
+		private void AddBackupImage(Image image)
+		{
+			PictureBox pictureBox = new PictureBox();
+			pictureBox.SizeMode = PictureBoxSizeMode.AutoSize;
+			pictureBox.Image = image;
+			pictureBox.Parent = applicationImageFlowLayout;
+			pictureBox.ContextMenuStrip = applicationImageContextMenu;
+			pictureBox.MouseDown += pictureBox_Click!;
+		}
+
+		/// <summary>
+		/// Removes the last image added to the images flow view.
+		/// </summary>
+		/// <param name="sender">Unused</param>
+		/// <param name="e">Unused</param>
+		private void applicationImageDeleteButton_Click(object sender, EventArgs e)
+		{
+			if (applicationImageFlowLayout.Controls.Count == 0)
+				return;
+			applicationImageFlowLayout.Controls.RemoveAt(applicationImageFlowLayout.Controls.Count - 1);
+		}
+
+		/// <summary>
+		/// Removes all images from the images flow view.
+		/// </summary>
+		/// <param name="sender">Unused</param>
+		/// <param name="e">Unused</param>
+		private void applicationImageClearButton_Click(object sender, EventArgs e)
+		{
+			applicationImageFlowLayout.Controls.Clear();
+		}
+
+		/// <summary>
+		/// Creates a temp file of the image, then opens it externaly.
+		/// </summary>
+		/// <param name="sender">Unused</param>
+		/// <param name="e">Unused</param>
 		private void viewImageToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			if (lastClickedImage == null)
@@ -291,6 +382,35 @@ namespace JAM
 			}
 		}
 
+		/// <summary>
+		/// Removes the image the user right clicked on.
+		/// </summary>
+		/// <param name="sender">Unused</param>
+		/// <param name="e">Unused</param>
+		private void removeImageToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (lastClickedImage == null)
+				return;
+			applicationImageFlowLayout.Controls.Remove(lastClickedImage);
+		}
+
+		/// <summary>
+		/// Sets the last clicked image so the context menu options can access it.
+		/// </summary>
+		/// <param name="sender">The PictureBox that was clicked</param>
+		/// <param name="e">Unused</param>
+		private void pictureBox_Click(object sender, EventArgs e)
+		{
+			if (sender is PictureBox)
+			{
+				lastClickedImage = (PictureBox)sender;
+			}
+		}
+
+		/// <summary>
+		/// Helper function that destroys the last opened image. <br/>
+		/// Used to prevent temp images from being left on the user's machine.
+		/// </summary>
 		public void TryDestroyCurrTempImage()
 		{
 			if (lastTempPath == null)
@@ -304,26 +424,34 @@ namespace JAM
 				MessageBox.Show("Could not delete the file: " + lastTempPath);
 			}
 		}
+		#endregion Application Image
 
-		private void removeImageToolStripMenuItem_Click(object sender, EventArgs e)
+		#region Application
+		/// <summary>
+		/// Determines if the other type TextBox should be enabled.
+		/// </summary>
+		/// <param name="sender">Unused</param>
+		/// <param name="e">Unused</param>
+		private void applicationTypeComboBox_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (lastClickedImage == null)
-				return;
-			applicationImageFlowLayout.Controls.Remove(lastClickedImage);
+			if (applicationTypeComboBox.SelectedIndex == (int)ApplicationType.OTHER)
+			{
+				applicationTypeOtherLabel.Enabled = true;
+				applicationTypeOtherTextBox.Enabled = true;
+			}
+			else
+			{
+				applicationTypeOtherLabel.Enabled = false;
+				applicationTypeOtherTextBox.Enabled = false;
+			}
 		}
 
-		private void applicationImageDeleteButton_Click(object sender, EventArgs e)
-		{
-			if (applicationImageFlowLayout.Controls.Count == 0)
-				return;
-			applicationImageFlowLayout.Controls.RemoveAt(applicationImageFlowLayout.Controls.Count - 1);
-		}
-
-		private void applicationImageClearButton_Click(object sender, EventArgs e)
-		{
-			applicationImageFlowLayout.Controls.Clear();
-		}
-
+		/// <summary>
+		/// Lets the user select a filepath of a new resume to add. <br/>
+		/// Resume data is not saved to a file until the application is saved.
+		/// </summary>
+		/// <param name="sender">Unused</param>
+		/// <param name="e">Unused</param>
 		private void applicationResumeUploadButton_Click(object sender, EventArgs e)
 		{
 			OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -333,24 +461,11 @@ namespace JAM
 			applicationResumeComboBox.Text = openFileDialog.FileName;
 		}
 
-		private void applicationCoverLetterUploadButton_Click(object sender, EventArgs e)
-		{
-			try
-			{
-				OpenFileDialog openFileDialog = new OpenFileDialog();
-				openFileDialog.Filter = "pdf files (*.pdf)|*.pdf";
-				if (openFileDialog.ShowDialog() != DialogResult.OK)
-					return;
-				applicationCoverLetterTextBox.Text = openFileDialog.SafeFileName;
-				applicationCoverLetterTextBox.Tag = File.ReadAllBytes(openFileDialog.FileName);
-			}
-			catch (Exception ex)
-			{
-				applicationCoverLetterTextBox.Text = "None";
-				applicationCoverLetterTextBox.Tag = null;
-				MessageBox.Show("Issue uploading cover letter: " + ex.Message);
-			}
-		}
+		/// <summary>
+		/// Lets the user open the cover letter they have uploaded.
+		/// </summary>
+		/// <param name="sender">Unused</param>
+		/// <param name="e">Unused</param>
 		private void applicationCoverLetterOpenButton_Click(object sender, EventArgs e)
 		{
 			if (applicationCoverLetterTextBox.Tag == null)
@@ -373,28 +488,102 @@ namespace JAM
 			}
 		}
 
+		/// <summary>
+		/// Lets the user upload a cover letter. <br/>
+		/// Cover letter data is stored in a variable imeadiatly since they are unique to each application.
+		/// </summary>
+		/// <param name="sender">Unused</param>
+		/// <param name="e">Unused</param>
+		private void applicationCoverLetterUploadButton_Click(object sender, EventArgs e)
+		{
+			try
+			{
+				OpenFileDialog openFileDialog = new OpenFileDialog();
+				openFileDialog.Filter = "pdf files (*.pdf)|*.pdf";
+				if (openFileDialog.ShowDialog() != DialogResult.OK)
+					return;
+				applicationCoverLetterTextBox.Text = openFileDialog.SafeFileName;
+				applicationCoverLetterTextBox.Tag = File.ReadAllBytes(openFileDialog.FileName);
+			}
+			catch (Exception ex)
+			{
+				applicationCoverLetterTextBox.Text = "None";
+				applicationCoverLetterTextBox.Tag = null;
+				MessageBox.Show("Issue uploading cover letter: " + ex.Message);
+			}
+		}
+
+		/// <summary>
+		/// Deletes the current cover letter's name and data.
+		/// </summary>
+		/// <param name="sender">Unused</param>
+		/// <param name="e">Unused</param>
 		private void applicationCoverLetterDeleteButton_Click(object sender, EventArgs e)
 		{
 			applicationCoverLetterTextBox.Text = "None";
 			applicationCoverLetterTextBox.Tag = null;
 		}
+		#endregion Application
 
-		private void cancelButton_Click(object sender, EventArgs e)
+		#region Augmentations
+		/// <summary>
+		/// Determines whether the other status TextBox needs to be enabled.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void augmentStatusComboBox_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			statusChanged = false;
-			Close();
+			if (augmentStatusComboBox.SelectedIndex == (int)ApplicationStatus.OTHER)
+			{
+				augmentStatusOtherLabel.Enabled = true;
+				augmentStatusOtherTextBox.Enabled = true;
+			}
+			else
+			{
+				augmentStatusOtherLabel.Enabled = false;
+				augmentStatusOtherTextBox.Enabled = false;
+			}
+			augmentStatusTimeDateTimePicker.Value = DateTime.Now;
 		}
 
+		/// <summary>
+		/// Auto update last update time to now since status changed.
+		/// </summary>
+		/// <param name="sender">Unused</param>
+		/// <param name="e">Unused</param>
+		private void augmentStatusOtherTextBox_TextChanged(object sender, EventArgs e)
+		{
+			augmentStatusTimeDateTimePicker.Value = DateTime.Now;
+			StatusUpdated(sender, e);
+		}
+		#endregion Augmentations
+
+		#region Generic
+		/// <summary>
+		/// Used when something on the form changed so user can be informed when closing the form.
+		/// </summary>
+		/// <param name="sender">Unused</param>
+		/// <param name="e">Unused</param>
 		private void StatusUpdated(object sender, EventArgs e)
 		{
 			statusChanged = true;
 		}
 
+		/// <summary>
+		/// Used when an image is added to or removed from the images flow view so user can be informed when closing the form.
+		/// </summary>
+		/// <param name="sender">Unused</param>
+		/// <param name="e">Unused</param>
 		private void StatusUpdated(object sender, ControlEventArgs e)
 		{
 			statusChanged = true;
 		}
 
+		/// <summary>
+		/// Saves the application, resume, or both depending on the editor type. <br/>
+		/// </summary>
+		/// <param name="sender">Unused</param>
+		/// <param name="e">Unused</param>
 		private void saveButton_Click(object sender, EventArgs e)
 		{
 			List<string> errorList = new List<string>();
@@ -574,7 +763,21 @@ namespace JAM
 			Close();
 		}
 
-		private void ScrapeApplicationTab (
+		/// <summary>
+		/// Helper function for getting all of the information off of the application tab. <br/>
+		/// Used when creating new applications, or editing pre-existing ones.
+		/// </summary>
+		/// <param name="position">The position the application is for</param>
+		/// <param name="link">A link to the application page</param>
+		/// <param name="applicationType">The type of application being submitted</param>
+		/// <param name="location">Where position is located</param>
+		/// <param name="salary">What salary the position is offering</param>
+		/// <param name="resume">The resume submitted to the application</param>
+		/// <param name="coverLetterFileName">The file name of the cover letter submitted to the application</param>
+		/// <param name="coverLetter">The cover letter submitted to the application</param>
+		/// <param name="info">Additional information abbout the position</param>
+		/// <param name="images">A string representing images of the position in case the link to the position dies</param>
+		private void ScrapeApplicationTab(
 			out string position,
 			out string link,
 			out string applicationType,
@@ -657,40 +860,17 @@ namespace JAM
 			images = imagesSB.ToString();
 		}
 
-		private void applicationTypeComboBox_SelectedIndexChanged(object sender, EventArgs e)
+		/// <summary>
+		/// Closes out of the application editor without prompting the user of changes made.
+		/// </summary>
+		/// <param name="sender">Unused</param>
+		/// <param name="e">Unused</param>
+		private void cancelButton_Click(object sender, EventArgs e)
 		{
-			if (applicationTypeComboBox.SelectedIndex == (int)ApplicationType.OTHER)
-			{
-				applicationTypeOtherLabel.Enabled = true;
-				applicationTypeOtherTextBox.Enabled = true;
-			}
-			else
-			{
-				applicationTypeOtherLabel.Enabled = false;
-				applicationTypeOtherTextBox.Enabled = false;
-			}
+			statusChanged = false;
+			Close();
 		}
-
-		private void augmentStatusComboBox_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			if (augmentStatusComboBox.SelectedIndex == (int)ApplicationStatus.OTHER)
-			{
-				augmentStatusOtherLabel.Enabled = true;
-				augmentStatusOtherTextBox.Enabled = true;
-			}
-			else
-			{
-				augmentStatusOtherLabel.Enabled = false;
-				augmentStatusOtherTextBox.Enabled = false;
-			}
-			augmentStatusTimeDateTimePicker.Value = DateTime.Now;
-		}
-
-		private void augmentStatusOtherTextBox_TextChanged(object sender, EventArgs e)
-		{
-			augmentStatusTimeDateTimePicker.Value = DateTime.Now;
-			StatusUpdated(sender, e);
-		}
+		#endregion Generic
 	}
 
 	public enum EditorType

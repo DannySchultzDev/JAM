@@ -679,6 +679,7 @@
 			applicationImageFlowLayout.TabIndex = 0;
 			applicationImageFlowLayout.WrapContents = false;
 			applicationImageFlowLayout.ControlAdded += StatusUpdated;
+			applicationImageFlowLayout.ControlRemoved += StatusUpdated;
 			// 
 			// applicationResumeLabel
 			// 
@@ -992,7 +993,7 @@
 			ShowIcon = false;
 			Text = "Application Editor";
 			FormClosing += CloseApplicationEditor;
-			Load += ApplicationEditor_Load;
+			Load += LoadApplicationEditor;
 			mainTableLayout.ResumeLayout(false);
 			mainTabControl.ResumeLayout(false);
 			companyTabPage.ResumeLayout(false);
