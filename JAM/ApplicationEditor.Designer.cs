@@ -181,7 +181,7 @@
 			reuseCompanyCheckBox.Location = new Point(3, 3);
 			reuseCompanyCheckBox.Name = "reuseCompanyCheckBox";
 			reuseCompanyCheckBox.Size = new Size(194, 44);
-			reuseCompanyCheckBox.TabIndex = 0;
+			reuseCompanyCheckBox.TabIndex = 1;
 			reuseCompanyCheckBox.Text = "Reuse Company:";
 			reuseCompanyCheckBox.TextAlign = ContentAlignment.TopLeft;
 			reuseCompanyCheckBox.UseVisualStyleBackColor = true;
@@ -197,7 +197,7 @@
 			reuseCompanyComboBox.Location = new Point(203, 3);
 			reuseCompanyComboBox.Name = "reuseCompanyComboBox";
 			reuseCompanyComboBox.Size = new Size(705, 33);
-			reuseCompanyComboBox.TabIndex = 1;
+			reuseCompanyComboBox.TabIndex = 2;
 			reuseCompanyComboBox.TextUpdate += StatusUpdated;
 			// 
 			// viewCompanyButton
@@ -273,7 +273,7 @@
 			companyNameTextBox.Location = new Point(103, 3);
 			companyNameTextBox.Name = "companyNameTextBox";
 			companyNameTextBox.Size = new Size(343, 31);
-			companyNameTextBox.TabIndex = 7;
+			companyNameTextBox.TabIndex = 4;
 			companyNameTextBox.TextChanged += StatusUpdated;
 			// 
 			// companyWebsiteLabel
@@ -293,7 +293,7 @@
 			companyWebsiteTextBox.Location = new Point(552, 3);
 			companyWebsiteTextBox.Name = "companyWebsiteTextBox";
 			companyWebsiteTextBox.Size = new Size(394, 31);
-			companyWebsiteTextBox.TabIndex = 8;
+			companyWebsiteTextBox.TabIndex = 5;
 			companyWebsiteTextBox.TextChanged += StatusUpdated;
 			// 
 			// companyCareersWebsiteLabel
@@ -312,7 +312,7 @@
 			companyCareersWebsiteTextBox.Location = new Point(103, 53);
 			companyCareersWebsiteTextBox.Name = "companyCareersWebsiteTextBox";
 			companyCareersWebsiteTextBox.Size = new Size(343, 31);
-			companyCareersWebsiteTextBox.TabIndex = 9;
+			companyCareersWebsiteTextBox.TabIndex = 6;
 			companyCareersWebsiteTextBox.TextChanged += StatusUpdated;
 			// 
 			// companyCareersHomeLabel
@@ -332,7 +332,7 @@
 			companyCareersHomeTextBox.Location = new Point(552, 53);
 			companyCareersHomeTextBox.Name = "companyCareersHomeTextBox";
 			companyCareersHomeTextBox.Size = new Size(394, 31);
-			companyCareersHomeTextBox.TabIndex = 10;
+			companyCareersHomeTextBox.TabIndex = 7;
 			companyCareersHomeTextBox.TextChanged += StatusUpdated;
 			// 
 			// companyEmailLabel
@@ -351,7 +351,7 @@
 			companyEmailTextBox.Location = new Point(103, 123);
 			companyEmailTextBox.Name = "companyEmailTextBox";
 			companyEmailTextBox.Size = new Size(343, 31);
-			companyEmailTextBox.TabIndex = 11;
+			companyEmailTextBox.TabIndex = 8;
 			companyEmailTextBox.TextChanged += StatusUpdated;
 			// 
 			// companyPasswordLabel
@@ -371,7 +371,7 @@
 			companyPasswordTextBox.Name = "companyPasswordTextBox";
 			companyPasswordTextBox.PasswordChar = '•';
 			companyPasswordTextBox.Size = new Size(343, 31);
-			companyPasswordTextBox.TabIndex = 12;
+			companyPasswordTextBox.TabIndex = 9;
 			companyPasswordTextBox.TextChanged += StatusUpdated;
 			// 
 			// companyPasswordViewButton
@@ -381,7 +381,7 @@
 			companyPasswordViewButton.Location = new Point(901, 123);
 			companyPasswordViewButton.Name = "companyPasswordViewButton";
 			companyPasswordViewButton.Size = new Size(45, 44);
-			companyPasswordViewButton.TabIndex = 14;
+			companyPasswordViewButton.TabIndex = 10;
 			companyPasswordViewButton.UseVisualStyleBackColor = true;
 			companyPasswordViewButton.Click += companyPasswordViewButton_Click;
 			// 
@@ -403,7 +403,7 @@
 			companyInfoTextBox.Multiline = true;
 			companyInfoTextBox.Name = "companyInfoTextBox";
 			companyInfoTextBox.Size = new Size(843, 375);
-			companyInfoTextBox.TabIndex = 15;
+			companyInfoTextBox.TabIndex = 11;
 			companyInfoTextBox.TextChanged += StatusUpdated;
 			// 
 			// applicationTabPage
@@ -438,36 +438,37 @@
 			applicationTableLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 50F));
 			applicationTableLayout.Controls.Add(applicationPositionLabel, 0, 0);
 			applicationTableLayout.Controls.Add(applicationPositionTextBox, 3, 0);
-			applicationTableLayout.Controls.Add(applicationLinkLabel, 7, 0);
-			applicationTableLayout.Controls.Add(applicationLinkTextBox, 11, 0);
-			applicationTableLayout.Controls.Add(applicationTypeLabel, 0, 1);
-			applicationTableLayout.Controls.Add(applicationTypeComboBox, 3, 1);
-			applicationTableLayout.Controls.Add(applicationTypeOtherLabel, 0, 2);
-			applicationTableLayout.Controls.Add(applicationTypeOtherTextBox, 3, 2);
-			applicationTableLayout.Controls.Add(applicationLocationLabel, 0, 3);
-			applicationTableLayout.Controls.Add(applicationLocationTextBox, 3, 3);
-			applicationTableLayout.Controls.Add(applicationSalaryLabel, 0, 4);
-			applicationTableLayout.Controls.Add(applicationSalaryTextBox, 3, 4);
-			applicationTableLayout.Controls.Add(applicationImageLabel, 7, 1);
-			applicationTableLayout.Controls.Add(applicationImagePasteButton, 12, 1);
-			applicationTableLayout.Controls.Add(applicationImageUploadButton, 13, 1);
-			applicationTableLayout.Controls.Add(applicationImageDeleteButton, 14, 1);
-			applicationTableLayout.Controls.Add(applicationImageClearButton, 15, 1);
-			applicationTableLayout.Controls.Add(applicationImageFlowLayout, 11, 2);
-			applicationTableLayout.Controls.Add(applicationResumeLabel, 0, 5);
-			applicationTableLayout.Controls.Add(applicationResumeComboBox, 3, 5);
-			applicationTableLayout.Controls.Add(applicationResumeUploadButton, 8, 5);
-			applicationTableLayout.Controls.Add(applicationCoverLetterLabel, 0, 6);
-			applicationTableLayout.Controls.Add(applicationCoverLetterTextBox, 3, 6);
-			applicationTableLayout.Controls.Add(applicationCoverLetterOpenButton, 8, 6);
-			applicationTableLayout.Controls.Add(applicationCoverLetterUploadButton, 9, 6);
-			applicationTableLayout.Controls.Add(applicationCoverLetterDeleteButton, 10, 6);
-			applicationTableLayout.Controls.Add(applicationInfoLabel, 0, 7);
-			applicationTableLayout.Controls.Add(applicationInfoTextBox, 3, 7);
+			applicationTableLayout.Controls.Add(applicationLinkLabel, 0, 1);
+			applicationTableLayout.Controls.Add(applicationLinkTextBox, 3, 1);
+			applicationTableLayout.Controls.Add(applicationTypeLabel, 0, 2);
+			applicationTableLayout.Controls.Add(applicationTypeComboBox, 3, 2);
+			applicationTableLayout.Controls.Add(applicationTypeOtherLabel, 0, 3);
+			applicationTableLayout.Controls.Add(applicationTypeOtherTextBox, 3, 3);
+			applicationTableLayout.Controls.Add(applicationLocationLabel, 0, 4);
+			applicationTableLayout.Controls.Add(applicationLocationTextBox, 3, 4);
+			applicationTableLayout.Controls.Add(applicationSalaryLabel, 0, 5);
+			applicationTableLayout.Controls.Add(applicationSalaryTextBox, 3, 5);
+			applicationTableLayout.Controls.Add(applicationImageLabel, 7, 0);
+			applicationTableLayout.Controls.Add(applicationImagePasteButton, 12, 0);
+			applicationTableLayout.Controls.Add(applicationImageUploadButton, 13, 0);
+			applicationTableLayout.Controls.Add(applicationImageDeleteButton, 14, 0);
+			applicationTableLayout.Controls.Add(applicationImageClearButton, 15, 0);
+			applicationTableLayout.Controls.Add(applicationImageFlowLayout, 11, 1);
+			applicationTableLayout.Controls.Add(applicationResumeLabel, 0, 6);
+			applicationTableLayout.Controls.Add(applicationResumeComboBox, 3, 6);
+			applicationTableLayout.Controls.Add(applicationResumeUploadButton, 8, 6);
+			applicationTableLayout.Controls.Add(applicationCoverLetterLabel, 0, 7);
+			applicationTableLayout.Controls.Add(applicationCoverLetterTextBox, 3, 7);
+			applicationTableLayout.Controls.Add(applicationCoverLetterOpenButton, 8, 7);
+			applicationTableLayout.Controls.Add(applicationCoverLetterUploadButton, 9, 7);
+			applicationTableLayout.Controls.Add(applicationCoverLetterDeleteButton, 10, 7);
+			applicationTableLayout.Controls.Add(applicationInfoLabel, 0, 8);
+			applicationTableLayout.Controls.Add(applicationInfoTextBox, 3, 8);
 			applicationTableLayout.Dock = DockStyle.Fill;
 			applicationTableLayout.Location = new Point(3, 3);
 			applicationTableLayout.Name = "applicationTableLayout";
-			applicationTableLayout.RowCount = 8;
+			applicationTableLayout.RowCount = 9;
+			applicationTableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 50F));
 			applicationTableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 50F));
 			applicationTableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 50F));
 			applicationTableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 50F));
@@ -497,7 +498,7 @@
 			applicationPositionTextBox.Location = new Point(153, 3);
 			applicationPositionTextBox.Name = "applicationPositionTextBox";
 			applicationPositionTextBox.Size = new Size(246, 31);
-			applicationPositionTextBox.TabIndex = 7;
+			applicationPositionTextBox.TabIndex = 12;
 			applicationPositionTextBox.TextChanged += StatusUpdated;
 			// 
 			// applicationLinkLabel
@@ -505,7 +506,7 @@
 			applicationLinkLabel.AutoSize = true;
 			applicationTableLayout.SetColumnSpan(applicationLinkLabel, 3);
 			applicationLinkLabel.Dock = DockStyle.Fill;
-			applicationLinkLabel.Location = new Point(405, 0);
+			applicationLinkLabel.Location = new Point(3, 50);
 			applicationLinkLabel.Name = "applicationLinkLabel";
 			applicationLinkLabel.Size = new Size(144, 50);
 			applicationLinkLabel.TabIndex = 1;
@@ -515,10 +516,10 @@
 			// 
 			applicationTableLayout.SetColumnSpan(applicationLinkTextBox, 5);
 			applicationLinkTextBox.Dock = DockStyle.Fill;
-			applicationLinkTextBox.Location = new Point(555, 3);
+			applicationLinkTextBox.Location = new Point(153, 53);
 			applicationLinkTextBox.Name = "applicationLinkTextBox";
-			applicationLinkTextBox.Size = new Size(403, 31);
-			applicationLinkTextBox.TabIndex = 8;
+			applicationLinkTextBox.Size = new Size(246, 31);
+			applicationLinkTextBox.TabIndex = 17;
 			applicationLinkTextBox.TextChanged += StatusUpdated;
 			// 
 			// applicationTypeLabel
@@ -526,7 +527,7 @@
 			applicationTypeLabel.AutoSize = true;
 			applicationTableLayout.SetColumnSpan(applicationTypeLabel, 3);
 			applicationTypeLabel.Dock = DockStyle.Fill;
-			applicationTypeLabel.Location = new Point(3, 50);
+			applicationTypeLabel.Location = new Point(3, 100);
 			applicationTypeLabel.Name = "applicationTypeLabel";
 			applicationTypeLabel.Size = new Size(144, 50);
 			applicationTypeLabel.TabIndex = 2;
@@ -539,10 +540,10 @@
 			applicationTableLayout.SetColumnSpan(applicationTypeComboBox, 5);
 			applicationTypeComboBox.Dock = DockStyle.Fill;
 			applicationTypeComboBox.FormattingEnabled = true;
-			applicationTypeComboBox.Location = new Point(153, 53);
+			applicationTypeComboBox.Location = new Point(153, 103);
 			applicationTypeComboBox.Name = "applicationTypeComboBox";
 			applicationTypeComboBox.Size = new Size(246, 33);
-			applicationTypeComboBox.TabIndex = 9;
+			applicationTypeComboBox.TabIndex = 18;
 			applicationTypeComboBox.SelectedIndexChanged += applicationTypeComboBox_SelectedIndexChanged;
 			applicationTypeComboBox.TextUpdate += StatusUpdated;
 			// 
@@ -551,7 +552,7 @@
 			applicationTypeOtherLabel.AutoSize = true;
 			applicationTableLayout.SetColumnSpan(applicationTypeOtherLabel, 3);
 			applicationTypeOtherLabel.Dock = DockStyle.Fill;
-			applicationTypeOtherLabel.Location = new Point(3, 100);
+			applicationTypeOtherLabel.Location = new Point(3, 150);
 			applicationTypeOtherLabel.Name = "applicationTypeOtherLabel";
 			applicationTypeOtherLabel.Size = new Size(144, 50);
 			applicationTypeOtherLabel.TabIndex = 31;
@@ -562,10 +563,10 @@
 			applicationTableLayout.SetColumnSpan(applicationTypeOtherTextBox, 5);
 			applicationTypeOtherTextBox.Dock = DockStyle.Fill;
 			applicationTypeOtherTextBox.Enabled = false;
-			applicationTypeOtherTextBox.Location = new Point(153, 103);
+			applicationTypeOtherTextBox.Location = new Point(153, 153);
 			applicationTypeOtherTextBox.Name = "applicationTypeOtherTextBox";
 			applicationTypeOtherTextBox.Size = new Size(246, 31);
-			applicationTypeOtherTextBox.TabIndex = 12;
+			applicationTypeOtherTextBox.TabIndex = 19;
 			applicationTypeOtherTextBox.TextChanged += StatusUpdated;
 			// 
 			// applicationLocationLabel
@@ -573,7 +574,7 @@
 			applicationLocationLabel.AutoSize = true;
 			applicationTableLayout.SetColumnSpan(applicationLocationLabel, 3);
 			applicationLocationLabel.Dock = DockStyle.Fill;
-			applicationLocationLabel.Location = new Point(3, 150);
+			applicationLocationLabel.Location = new Point(3, 200);
 			applicationLocationLabel.Name = "applicationLocationLabel";
 			applicationLocationLabel.Size = new Size(144, 50);
 			applicationLocationLabel.TabIndex = 24;
@@ -583,10 +584,10 @@
 			// 
 			applicationTableLayout.SetColumnSpan(applicationLocationTextBox, 5);
 			applicationLocationTextBox.Dock = DockStyle.Fill;
-			applicationLocationTextBox.Location = new Point(153, 153);
+			applicationLocationTextBox.Location = new Point(153, 203);
 			applicationLocationTextBox.Name = "applicationLocationTextBox";
 			applicationLocationTextBox.Size = new Size(246, 31);
-			applicationLocationTextBox.TabIndex = 26;
+			applicationLocationTextBox.TabIndex = 20;
 			applicationLocationTextBox.TextChanged += StatusUpdated;
 			// 
 			// applicationSalaryLabel
@@ -594,7 +595,7 @@
 			applicationSalaryLabel.AutoSize = true;
 			applicationTableLayout.SetColumnSpan(applicationSalaryLabel, 3);
 			applicationSalaryLabel.Dock = DockStyle.Fill;
-			applicationSalaryLabel.Location = new Point(3, 200);
+			applicationSalaryLabel.Location = new Point(3, 250);
 			applicationSalaryLabel.Name = "applicationSalaryLabel";
 			applicationSalaryLabel.Size = new Size(144, 50);
 			applicationSalaryLabel.TabIndex = 25;
@@ -604,10 +605,10 @@
 			// 
 			applicationTableLayout.SetColumnSpan(applicationSalaryTextBox, 5);
 			applicationSalaryTextBox.Dock = DockStyle.Fill;
-			applicationSalaryTextBox.Location = new Point(153, 203);
+			applicationSalaryTextBox.Location = new Point(153, 253);
 			applicationSalaryTextBox.Name = "applicationSalaryTextBox";
 			applicationSalaryTextBox.Size = new Size(246, 31);
-			applicationSalaryTextBox.TabIndex = 27;
+			applicationSalaryTextBox.TabIndex = 21;
 			applicationSalaryTextBox.TextChanged += StatusUpdated;
 			// 
 			// applicationImageLabel
@@ -615,7 +616,7 @@
 			applicationImageLabel.AutoSize = true;
 			applicationTableLayout.SetColumnSpan(applicationImageLabel, 4);
 			applicationImageLabel.Dock = DockStyle.Fill;
-			applicationImageLabel.Location = new Point(405, 50);
+			applicationImageLabel.Location = new Point(405, 0);
 			applicationImageLabel.Name = "applicationImageLabel";
 			applicationImageLabel.Size = new Size(352, 50);
 			applicationImageLabel.TabIndex = 3;
@@ -625,10 +626,10 @@
 			// 
 			applicationImagePasteButton.Dock = DockStyle.Fill;
 			applicationImagePasteButton.Image = Properties.Resources.Paste;
-			applicationImagePasteButton.Location = new Point(763, 53);
+			applicationImagePasteButton.Location = new Point(763, 3);
 			applicationImagePasteButton.Name = "applicationImagePasteButton";
 			applicationImagePasteButton.Size = new Size(44, 44);
-			applicationImagePasteButton.TabIndex = 10;
+			applicationImagePasteButton.TabIndex = 13;
 			applicationImagePasteButton.UseVisualStyleBackColor = true;
 			applicationImagePasteButton.Click += applicationImagePasteButton_Click;
 			// 
@@ -636,10 +637,10 @@
 			// 
 			applicationImageUploadButton.Dock = DockStyle.Fill;
 			applicationImageUploadButton.Image = Properties.Resources.FolderOpened;
-			applicationImageUploadButton.Location = new Point(813, 53);
+			applicationImageUploadButton.Location = new Point(813, 3);
 			applicationImageUploadButton.Name = "applicationImageUploadButton";
 			applicationImageUploadButton.Size = new Size(44, 44);
-			applicationImageUploadButton.TabIndex = 11;
+			applicationImageUploadButton.TabIndex = 14;
 			applicationImageUploadButton.UseVisualStyleBackColor = true;
 			applicationImageUploadButton.Click += applicationImageUploadButton_Click;
 			// 
@@ -647,10 +648,10 @@
 			// 
 			applicationImageDeleteButton.Dock = DockStyle.Fill;
 			applicationImageDeleteButton.Image = Properties.Resources.Close;
-			applicationImageDeleteButton.Location = new Point(863, 53);
+			applicationImageDeleteButton.Location = new Point(863, 3);
 			applicationImageDeleteButton.Name = "applicationImageDeleteButton";
 			applicationImageDeleteButton.Size = new Size(44, 44);
-			applicationImageDeleteButton.TabIndex = 20;
+			applicationImageDeleteButton.TabIndex = 15;
 			applicationImageDeleteButton.UseVisualStyleBackColor = true;
 			applicationImageDeleteButton.Click += applicationImageDeleteButton_Click;
 			// 
@@ -658,10 +659,10 @@
 			// 
 			applicationImageClearButton.Dock = DockStyle.Fill;
 			applicationImageClearButton.Image = Properties.Resources.CloseAll;
-			applicationImageClearButton.Location = new Point(913, 53);
+			applicationImageClearButton.Location = new Point(913, 3);
 			applicationImageClearButton.Name = "applicationImageClearButton";
 			applicationImageClearButton.Size = new Size(45, 44);
-			applicationImageClearButton.TabIndex = 21;
+			applicationImageClearButton.TabIndex = 16;
 			applicationImageClearButton.UseVisualStyleBackColor = true;
 			applicationImageClearButton.Click += applicationImageClearButton_Click;
 			// 
@@ -671,11 +672,11 @@
 			applicationTableLayout.SetColumnSpan(applicationImageFlowLayout, 5);
 			applicationImageFlowLayout.Dock = DockStyle.Fill;
 			applicationImageFlowLayout.FlowDirection = FlowDirection.TopDown;
-			applicationImageFlowLayout.Location = new Point(555, 103);
+			applicationImageFlowLayout.Location = new Point(555, 53);
 			applicationImageFlowLayout.Name = "applicationImageFlowLayout";
-			applicationTableLayout.SetRowSpan(applicationImageFlowLayout, 6);
-			applicationImageFlowLayout.Size = new Size(403, 531);
-			applicationImageFlowLayout.TabIndex = 13;
+			applicationTableLayout.SetRowSpan(applicationImageFlowLayout, 8);
+			applicationImageFlowLayout.Size = new Size(403, 581);
+			applicationImageFlowLayout.TabIndex = 0;
 			applicationImageFlowLayout.WrapContents = false;
 			applicationImageFlowLayout.ControlAdded += StatusUpdated;
 			// 
@@ -684,7 +685,7 @@
 			applicationResumeLabel.AutoSize = true;
 			applicationTableLayout.SetColumnSpan(applicationResumeLabel, 3);
 			applicationResumeLabel.Dock = DockStyle.Fill;
-			applicationResumeLabel.Location = new Point(3, 250);
+			applicationResumeLabel.Location = new Point(3, 300);
 			applicationResumeLabel.Name = "applicationResumeLabel";
 			applicationResumeLabel.Size = new Size(144, 50);
 			applicationResumeLabel.TabIndex = 4;
@@ -698,20 +699,20 @@
 			applicationResumeComboBox.Dock = DockStyle.Fill;
 			applicationResumeComboBox.FormattingEnabled = true;
 			applicationResumeComboBox.Items.AddRange(new object[] { "None" });
-			applicationResumeComboBox.Location = new Point(153, 253);
+			applicationResumeComboBox.Location = new Point(153, 303);
 			applicationResumeComboBox.Name = "applicationResumeComboBox";
 			applicationResumeComboBox.Size = new Size(246, 33);
-			applicationResumeComboBox.TabIndex = 28;
+			applicationResumeComboBox.TabIndex = 22;
 			applicationResumeComboBox.TextUpdate += StatusUpdated;
 			// 
 			// applicationResumeUploadButton
 			// 
 			applicationResumeUploadButton.Dock = DockStyle.Fill;
 			applicationResumeUploadButton.Image = Properties.Resources.FolderOpened;
-			applicationResumeUploadButton.Location = new Point(405, 253);
+			applicationResumeUploadButton.Location = new Point(405, 303);
 			applicationResumeUploadButton.Name = "applicationResumeUploadButton";
 			applicationResumeUploadButton.Size = new Size(44, 44);
-			applicationResumeUploadButton.TabIndex = 14;
+			applicationResumeUploadButton.TabIndex = 23;
 			applicationResumeUploadButton.UseVisualStyleBackColor = true;
 			applicationResumeUploadButton.Click += applicationResumeUploadButton_Click;
 			// 
@@ -720,7 +721,7 @@
 			applicationCoverLetterLabel.AutoSize = true;
 			applicationTableLayout.SetColumnSpan(applicationCoverLetterLabel, 3);
 			applicationCoverLetterLabel.Dock = DockStyle.Fill;
-			applicationCoverLetterLabel.Location = new Point(3, 300);
+			applicationCoverLetterLabel.Location = new Point(3, 350);
 			applicationCoverLetterLabel.Name = "applicationCoverLetterLabel";
 			applicationCoverLetterLabel.Size = new Size(144, 50);
 			applicationCoverLetterLabel.TabIndex = 5;
@@ -730,13 +731,13 @@
 			// 
 			applicationTableLayout.SetColumnSpan(applicationCoverLetterTextBox, 5);
 			applicationCoverLetterTextBox.Dock = DockStyle.Fill;
-			applicationCoverLetterTextBox.Location = new Point(153, 303);
+			applicationCoverLetterTextBox.Location = new Point(153, 353);
 			applicationCoverLetterTextBox.Multiline = true;
 			applicationCoverLetterTextBox.Name = "applicationCoverLetterTextBox";
 			applicationCoverLetterTextBox.ReadOnly = true;
 			applicationCoverLetterTextBox.ScrollBars = ScrollBars.Vertical;
 			applicationCoverLetterTextBox.Size = new Size(246, 44);
-			applicationCoverLetterTextBox.TabIndex = 30;
+			applicationCoverLetterTextBox.TabIndex = 24;
 			applicationCoverLetterTextBox.Text = "None";
 			applicationCoverLetterTextBox.TextChanged += StatusUpdated;
 			// 
@@ -744,10 +745,10 @@
 			// 
 			applicationCoverLetterOpenButton.Dock = DockStyle.Fill;
 			applicationCoverLetterOpenButton.Image = Properties.Resources.Open;
-			applicationCoverLetterOpenButton.Location = new Point(405, 303);
+			applicationCoverLetterOpenButton.Location = new Point(405, 353);
 			applicationCoverLetterOpenButton.Name = "applicationCoverLetterOpenButton";
 			applicationCoverLetterOpenButton.Size = new Size(44, 44);
-			applicationCoverLetterOpenButton.TabIndex = 29;
+			applicationCoverLetterOpenButton.TabIndex = 25;
 			applicationCoverLetterOpenButton.UseVisualStyleBackColor = true;
 			applicationCoverLetterOpenButton.Click += applicationCoverLetterOpenButton_Click;
 			// 
@@ -755,10 +756,10 @@
 			// 
 			applicationCoverLetterUploadButton.Dock = DockStyle.Fill;
 			applicationCoverLetterUploadButton.Image = Properties.Resources.FolderOpened;
-			applicationCoverLetterUploadButton.Location = new Point(455, 303);
+			applicationCoverLetterUploadButton.Location = new Point(455, 353);
 			applicationCoverLetterUploadButton.Name = "applicationCoverLetterUploadButton";
 			applicationCoverLetterUploadButton.Size = new Size(44, 44);
-			applicationCoverLetterUploadButton.TabIndex = 15;
+			applicationCoverLetterUploadButton.TabIndex = 26;
 			applicationCoverLetterUploadButton.UseVisualStyleBackColor = true;
 			applicationCoverLetterUploadButton.Click += applicationCoverLetterUploadButton_Click;
 			// 
@@ -766,10 +767,10 @@
 			// 
 			applicationCoverLetterDeleteButton.Dock = DockStyle.Fill;
 			applicationCoverLetterDeleteButton.Image = Properties.Resources.Close;
-			applicationCoverLetterDeleteButton.Location = new Point(505, 303);
+			applicationCoverLetterDeleteButton.Location = new Point(505, 353);
 			applicationCoverLetterDeleteButton.Name = "applicationCoverLetterDeleteButton";
 			applicationCoverLetterDeleteButton.Size = new Size(44, 44);
-			applicationCoverLetterDeleteButton.TabIndex = 23;
+			applicationCoverLetterDeleteButton.TabIndex = 27;
 			applicationCoverLetterDeleteButton.UseVisualStyleBackColor = true;
 			applicationCoverLetterDeleteButton.Click += applicationCoverLetterDeleteButton_Click;
 			// 
@@ -778,9 +779,9 @@
 			applicationInfoLabel.AutoSize = true;
 			applicationTableLayout.SetColumnSpan(applicationInfoLabel, 3);
 			applicationInfoLabel.Dock = DockStyle.Fill;
-			applicationInfoLabel.Location = new Point(3, 350);
+			applicationInfoLabel.Location = new Point(3, 400);
 			applicationInfoLabel.Name = "applicationInfoLabel";
-			applicationInfoLabel.Size = new Size(144, 287);
+			applicationInfoLabel.Size = new Size(144, 237);
 			applicationInfoLabel.TabIndex = 6;
 			applicationInfoLabel.Text = "Info:";
 			// 
@@ -788,11 +789,11 @@
 			// 
 			applicationTableLayout.SetColumnSpan(applicationInfoTextBox, 8);
 			applicationInfoTextBox.Dock = DockStyle.Fill;
-			applicationInfoTextBox.Location = new Point(153, 353);
+			applicationInfoTextBox.Location = new Point(153, 403);
 			applicationInfoTextBox.Multiline = true;
 			applicationInfoTextBox.Name = "applicationInfoTextBox";
-			applicationInfoTextBox.Size = new Size(396, 281);
-			applicationInfoTextBox.TabIndex = 19;
+			applicationInfoTextBox.Size = new Size(396, 231);
+			applicationInfoTextBox.TabIndex = 28;
 			applicationInfoTextBox.TextChanged += StatusUpdated;
 			// 
 			// augmentationsTabPage
@@ -852,7 +853,7 @@
 			augmentCompanyComboBox.Location = new Point(203, 3);
 			augmentCompanyComboBox.Name = "augmentCompanyComboBox";
 			augmentCompanyComboBox.Size = new Size(761, 33);
-			augmentCompanyComboBox.TabIndex = 4;
+			augmentCompanyComboBox.TabIndex = 29;
 			augmentCompanyComboBox.TextUpdate += StatusUpdated;
 			// 
 			// augmentCreationTimeLabel
@@ -871,7 +872,7 @@
 			augmentCreationTimeDateTimePicker.Location = new Point(203, 53);
 			augmentCreationTimeDateTimePicker.Name = "augmentCreationTimeDateTimePicker";
 			augmentCreationTimeDateTimePicker.Size = new Size(761, 31);
-			augmentCreationTimeDateTimePicker.TabIndex = 5;
+			augmentCreationTimeDateTimePicker.TabIndex = 30;
 			augmentCreationTimeDateTimePicker.ValueChanged += StatusUpdated;
 			// 
 			// augmentStatusLabel
@@ -890,10 +891,11 @@
 			augmentStatusComboBox.AutoCompleteSource = AutoCompleteSource.ListItems;
 			augmentStatusComboBox.Dock = DockStyle.Fill;
 			augmentStatusComboBox.FormattingEnabled = true;
+			augmentStatusComboBox.ItemHeight = 25;
 			augmentStatusComboBox.Location = new Point(203, 103);
 			augmentStatusComboBox.Name = "augmentStatusComboBox";
 			augmentStatusComboBox.Size = new Size(761, 33);
-			augmentStatusComboBox.TabIndex = 7;
+			augmentStatusComboBox.TabIndex = 31;
 			augmentStatusComboBox.SelectedIndexChanged += augmentStatusComboBox_SelectedIndexChanged;
 			augmentStatusComboBox.TextUpdate += StatusUpdated;
 			// 
@@ -915,7 +917,7 @@
 			augmentStatusOtherTextBox.Location = new Point(203, 153);
 			augmentStatusOtherTextBox.Name = "augmentStatusOtherTextBox";
 			augmentStatusOtherTextBox.Size = new Size(761, 31);
-			augmentStatusOtherTextBox.TabIndex = 9;
+			augmentStatusOtherTextBox.TabIndex = 32;
 			augmentStatusOtherTextBox.TextChanged += augmentStatusOtherTextBox_TextChanged;
 			// 
 			// augmentStatusTimeLabel
@@ -928,13 +930,13 @@
 			augmentStatusTimeLabel.TabIndex = 8;
 			augmentStatusTimeLabel.Text = "Last Update Time:";
 			// 
-			// augmentStausTimeDateTimePicker
+			// augmentStatusTimeDateTimePicker
 			// 
 			augmentStatusTimeDateTimePicker.Dock = DockStyle.Fill;
 			augmentStatusTimeDateTimePicker.Location = new Point(203, 203);
-			augmentStatusTimeDateTimePicker.Name = "augmentStausTimeDateTimePicker";
+			augmentStatusTimeDateTimePicker.Name = "augmentStatusTimeDateTimePicker";
 			augmentStatusTimeDateTimePicker.Size = new Size(761, 31);
-			augmentStatusTimeDateTimePicker.TabIndex = 6;
+			augmentStatusTimeDateTimePicker.TabIndex = 33;
 			augmentStatusTimeDateTimePicker.ValueChanged += StatusUpdated;
 			// 
 			// saveButton
@@ -943,7 +945,7 @@
 			saveButton.Location = new Point(3, 690);
 			saveButton.Name = "saveButton";
 			saveButton.Size = new Size(484, 44);
-			saveButton.TabIndex = 1;
+			saveButton.TabIndex = 34;
 			saveButton.Text = "Save";
 			saveButton.UseVisualStyleBackColor = true;
 			saveButton.Click += saveButton_Click;
@@ -954,7 +956,7 @@
 			cancelButton.Location = new Point(493, 690);
 			cancelButton.Name = "cancelButton";
 			cancelButton.Size = new Size(485, 44);
-			cancelButton.TabIndex = 2;
+			cancelButton.TabIndex = 35;
 			cancelButton.Text = "Cancel";
 			cancelButton.UseVisualStyleBackColor = true;
 			cancelButton.Click += cancelButton_Click;
