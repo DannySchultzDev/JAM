@@ -161,7 +161,7 @@ namespace JAM
 							applicationPositionTextBox.Text = applicationToEdit!.position;
 							applicationLinkTextBox.Text = applicationToEdit.link;
 
-							foreach(ApplicationType applicationType in Enum.GetValues(typeof(ApplicationType)))
+							foreach (ApplicationType applicationType in Enum.GetValues(typeof(ApplicationType)))
 								applicationTypeComboBox.Items.Add(Application.ApplicationTypes.GetValueOrDefault(applicationType, "Invalid Application Type"));
 							if (Enum.IsDefined(typeof(ApplicationType), applicationToEdit.applicationType))
 								applicationTypeComboBox.SelectedIndex = (int)Enum.Parse<ApplicationType>(applicationToEdit.applicationType);
@@ -265,6 +265,24 @@ namespace JAM
 			newCompanyGroupBox.Enabled = !reuseCompanyCheckBox.Checked;
 
 			statusChanged = true;
+		}
+
+		/// <summary>
+		/// Opens a company viewer of the currently selected company.
+		/// </summary>
+		/// <param name="sender">Unused</param>
+		/// <param name="e">Unused</param>
+		private void viewCompanyButton_Click(object sender, EventArgs e)
+		{
+			Company? companyToOpen;
+			if (!Home.companiesN.TryGetValue(reuseCompanyComboBox.Text, out companyToOpen) || companyToOpen == null)
+			{
+				MessageBox.Show("Company name is invalid.", "Could not open company", MessageBoxButtons.OK);
+				return;
+			}
+
+			CompanyViewer companyViewer = new CompanyViewer(companyToOpen.guid);
+			companyViewer.Show();
 		}
 
 		/// <summary>
@@ -689,6 +707,9 @@ namespace JAM
 						Home.companiesN.Add(companyToEdit.name, companyToEdit);
 
 						ApplicationSelector.WarnDataUpdate();
+
+						if (CompanyViewer.activeCompanies.TryGetValue(companyToEdit.guid, out CompanyViewer? companyViewer) && companyViewer != null)
+							companyViewer.UpdateValues();
 
 						break;
 					case EditorType.EDIT_APPLICATION:

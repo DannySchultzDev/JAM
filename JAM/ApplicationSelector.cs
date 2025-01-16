@@ -212,7 +212,8 @@ namespace JAM
 				switch (e.ColumnIndex)
 				{
 					case 2:
-						MessageBox.Show(((Company)companiesGrid.Rows[e.RowIndex].Tag!).name);
+						CompanyViewer viewer = new CompanyViewer(((Company)companiesGrid.Rows[e.RowIndex].Tag!).guid);
+						viewer.Show();
 						break;
 					case 3:
 						ApplicationEditor editor = new ApplicationEditor(EditorType.EDIT_COMPANY, (Company)companiesGrid.Rows[e.RowIndex].Tag!, null);

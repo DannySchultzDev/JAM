@@ -210,6 +210,7 @@
 			viewCompanyButton.Size = new Size(44, 44);
 			viewCompanyButton.TabIndex = 3;
 			viewCompanyButton.UseVisualStyleBackColor = true;
+			viewCompanyButton.Click += viewCompanyButton_Click;
 			// 
 			// newCompanyGroupBox
 			// 
