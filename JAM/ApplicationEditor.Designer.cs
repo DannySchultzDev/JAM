@@ -75,6 +75,7 @@
 			applicationImageFlowLayout = new FlowLayoutPanel();
 			applicationResumeLabel = new Label();
 			applicationResumeComboBox = new ComboBox();
+			applicationResumeOpenButton = new Button();
 			applicationResumeUploadButton = new Button();
 			applicationCoverLetterLabel = new Label();
 			applicationCoverLetterTextBox = new TextBox();
@@ -403,6 +404,7 @@
 			companyInfoTextBox.Location = new Point(103, 173);
 			companyInfoTextBox.Multiline = true;
 			companyInfoTextBox.Name = "companyInfoTextBox";
+			companyInfoTextBox.ScrollBars = ScrollBars.Vertical;
 			companyInfoTextBox.Size = new Size(843, 375);
 			companyInfoTextBox.TabIndex = 11;
 			companyInfoTextBox.TextChanged += StatusUpdated;
@@ -457,7 +459,8 @@
 			applicationTableLayout.Controls.Add(applicationImageFlowLayout, 11, 1);
 			applicationTableLayout.Controls.Add(applicationResumeLabel, 0, 6);
 			applicationTableLayout.Controls.Add(applicationResumeComboBox, 3, 6);
-			applicationTableLayout.Controls.Add(applicationResumeUploadButton, 8, 6);
+			applicationTableLayout.Controls.Add(applicationResumeOpenButton, 8, 6);
+			applicationTableLayout.Controls.Add(applicationResumeUploadButton, 9, 6);
 			applicationTableLayout.Controls.Add(applicationCoverLetterLabel, 0, 7);
 			applicationTableLayout.Controls.Add(applicationCoverLetterTextBox, 3, 7);
 			applicationTableLayout.Controls.Add(applicationCoverLetterOpenButton, 8, 7);
@@ -707,11 +710,22 @@
 			applicationResumeComboBox.TabIndex = 22;
 			applicationResumeComboBox.TextUpdate += StatusUpdated;
 			// 
+			// applicationResumeOpenButton
+			// 
+			applicationResumeOpenButton.Dock = DockStyle.Fill;
+			applicationResumeOpenButton.Image = Properties.Resources.Open;
+			applicationResumeOpenButton.Location = new Point(405, 303);
+			applicationResumeOpenButton.Name = "applicationResumeOpenButton";
+			applicationResumeOpenButton.Size = new Size(44, 44);
+			applicationResumeOpenButton.TabIndex = 23;
+			applicationResumeOpenButton.UseVisualStyleBackColor = true;
+			applicationResumeOpenButton.Click += applicationResumeOpenButton_Click;
+			// 
 			// applicationResumeUploadButton
 			// 
 			applicationResumeUploadButton.Dock = DockStyle.Fill;
 			applicationResumeUploadButton.Image = Properties.Resources.FolderOpened;
-			applicationResumeUploadButton.Location = new Point(405, 303);
+			applicationResumeUploadButton.Location = new Point(455, 303);
 			applicationResumeUploadButton.Name = "applicationResumeUploadButton";
 			applicationResumeUploadButton.Size = new Size(44, 44);
 			applicationResumeUploadButton.TabIndex = 23;
@@ -794,6 +808,7 @@
 			applicationInfoTextBox.Location = new Point(153, 403);
 			applicationInfoTextBox.Multiline = true;
 			applicationInfoTextBox.Name = "applicationInfoTextBox";
+			applicationInfoTextBox.ScrollBars = ScrollBars.Vertical;
 			applicationInfoTextBox.Size = new Size(396, 231);
 			applicationInfoTextBox.TabIndex = 28;
 			applicationInfoTextBox.TextChanged += StatusUpdated;
@@ -1086,5 +1101,6 @@
 		private Button applicationCoverLetterOpenButton;
 		private TextBox applicationCoverLetterTextBox;
 		private Label applicationTypeOtherLabel;
+		private Button applicationResumeOpenButton;
 	}
 }

@@ -183,10 +183,7 @@ namespace JAM
 								{
 									Image image = Image.FromStream(memoryStream);
 
-									PictureBox pictureBox = new PictureBox();
-									pictureBox.SizeMode = PictureBoxSizeMode.AutoSize;
-									pictureBox.Image = image;
-									applicationImageFlowLayout.Controls.Add(pictureBox);
+									AddBackupImage(image);
 								}
 							}
 							applicationResumeComboBox.Text = applicationToEdit.resume;
@@ -465,6 +462,55 @@ namespace JAM
 		}
 
 		/// <summary>
+		/// Lets the user open the resume they have uploaded.
+		/// </summary>
+		/// <param name="sender">Unused</param>
+		/// <param name="e">Unused</param>
+		private void applicationResumeOpenButton_Click(object sender, EventArgs e)
+		{
+			if (string.IsNullOrEmpty(applicationResumeComboBox.Text))
+				return;
+			else if (File.Exists(applicationResumeComboBox.Text))
+			{
+				try
+				{
+					Process.Start(new ProcessStartInfo
+					{
+						FileName = applicationResumeComboBox.Text,
+						UseShellExecute = true
+					});
+				}
+				catch
+				{
+					MessageBox.Show("Could not open resume.");
+				}
+			}
+			else if (Home.resumes.TryGetValue(applicationResumeComboBox.Text, out Resume? resume) &&
+				resume != null)
+			{
+				TryDestroyCurrTempImage();
+				lastTempPath = Path.Combine(Path.GetTempPath(), resume.guid + ".pdf");
+				try
+				{
+					File.WriteAllBytes(lastTempPath, EncryptionManager.GetBytes(resume.data));
+					Process.Start(new ProcessStartInfo
+					{
+						FileName = lastTempPath,
+						UseShellExecute = true
+					});
+				}
+				catch
+				{
+					MessageBox.Show("Could not open resume.");
+				}
+			}
+			else
+			{
+				MessageBox.Show("Could not open resume.");
+			}
+		}
+
+		/// <summary>
 		/// Lets the user select a filepath of a new resume to add. <br/>
 		/// Resume data is not saved to a file until the application is saved.
 		/// </summary>
@@ -682,36 +728,51 @@ namespace JAM
 
 							ApplicationSelector.WarnDataUpdate();
 
+							if (CompanyViewer.activeCompanies.TryGetValue(application.company, out CompanyViewer? companyViewer) &&
+								companyViewer != null)
+								companyViewer.UpdateValues();
+
 							break;
 						}
 					case EditorType.EDIT_COMPANY:
-						if (!companyNameTextBox.Text.Equals(companyToEdit!.name) && Home.companiesN.ContainsKey(companyNameTextBox.Text))
-							errorList.Add("Company created has the same name as a pre-existing company.");
+						{
+							if (!companyNameTextBox.Text.Equals(companyToEdit!.name) && Home.companiesN.ContainsKey(companyNameTextBox.Text))
+								errorList.Add("Company created has the same name as a pre-existing company.");
 
-						if (errorList.Count > 0)
+							if (errorList.Count > 0)
+								break;
+
+							string originalName = companyToEdit.name;
+
+							companyToEdit.name = companyNameTextBox.Text;
+							companyToEdit.website = companyWebsiteTextBox.Text;
+							companyToEdit.careerWebsite = companyCareersWebsiteTextBox.Text;
+							companyToEdit.careerHome = companyCareersHomeTextBox.Text;
+							companyToEdit.email = companyEmailTextBox.Text;
+							companyToEdit.password = companyPasswordTextBox.Text;
+							companyToEdit.info = companyInfoTextBox.Text;
+
+							FileManager.SaveXml(companyToEdit.ConvertToXml(), FileType.COMPANY, companyToEdit.guid + ".xml");
+							Home.companiesG[companyToEdit.guid] = companyToEdit;
+							Home.companiesN.Remove(originalName);
+							Home.companiesN.Add(companyToEdit.name, companyToEdit);
+
+							ApplicationSelector.WarnDataUpdate();
+
+							if (CompanyViewer.activeCompanies.TryGetValue(companyToEdit.guid, out CompanyViewer? companyViewer) && companyViewer != null)
+								companyViewer.UpdateValues();
+
+							foreach (ApplicationViewer viewer in ApplicationViewer.activeApplications.Values)
+							{
+								if (!string.IsNullOrEmpty(viewer.companyGuid) &&
+									viewer.companyGuid.Equals(companyToEdit.guid))
+								{
+									viewer.UpdateValues();
+								}
+							}
+
 							break;
-
-						string originalName = companyToEdit.name;
-
-						companyToEdit.name = companyNameTextBox.Text;
-						companyToEdit.website = companyWebsiteTextBox.Text;
-						companyToEdit.careerWebsite = companyCareersWebsiteTextBox.Text;
-						companyToEdit.careerHome = companyCareersHomeTextBox.Text;
-						companyToEdit.email = companyEmailTextBox.Text;
-						companyToEdit.password = companyPasswordTextBox.Text;
-						companyToEdit.info = companyInfoTextBox.Text;
-
-						FileManager.SaveXml(companyToEdit.ConvertToXml(), FileType.COMPANY, companyToEdit.guid + ".xml");
-						Home.companiesG[companyToEdit.guid] = companyToEdit;
-						Home.companiesN.Remove(originalName);
-						Home.companiesN.Add(companyToEdit.name, companyToEdit);
-
-						ApplicationSelector.WarnDataUpdate();
-
-						if (CompanyViewer.activeCompanies.TryGetValue(companyToEdit.guid, out CompanyViewer? companyViewer) && companyViewer != null)
-							companyViewer.UpdateValues();
-
-						break;
+						}
 					case EditorType.EDIT_APPLICATION:
 						{
 							if (augmentCompanyComboBox.SelectedIndex == -1)
@@ -745,6 +806,8 @@ namespace JAM
 							applicationToEdit.info = info;
 							applicationToEdit.images = images;
 
+							string oldCompanyGuid = applicationToEdit.company;
+
 							Company? company = null;
 							Home.companiesN.TryGetValue(augmentCompanyComboBox.Text, out company);
 							if (company == null)
@@ -764,6 +827,18 @@ namespace JAM
 							Home.applications[applicationToEdit.guid] = applicationToEdit;
 
 							ApplicationSelector.WarnDataUpdate();
+
+							if (CompanyViewer.activeCompanies.TryGetValue(oldCompanyGuid, out CompanyViewer? oldCompanyViewer) &&
+								oldCompanyViewer != null)
+								oldCompanyViewer.UpdateValues();
+
+							if (CompanyViewer.activeCompanies.TryGetValue(applicationToEdit.company, out CompanyViewer? companyViewer) &&
+								companyViewer != null)
+								companyViewer.UpdateValues();
+
+							if (ApplicationViewer.activeApplications.TryGetValue(applicationToEdit.guid, out ApplicationViewer? applicationViewer) &&
+								applicationViewer != null)
+								applicationViewer.UpdateValues();
 
 							break;
 						}

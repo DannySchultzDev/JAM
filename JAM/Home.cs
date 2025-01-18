@@ -167,6 +167,13 @@ namespace JAM
 					}
 				}
 			}
+			if (!e.Cancel)
+			{
+				foreach (ApplicationViewer viewer in ApplicationViewer.activeApplications.Values)
+				{
+					viewer.TryDestroyCurrTempImage();
+				}
+			}
 		}
 	}
 }

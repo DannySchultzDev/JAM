@@ -231,7 +231,8 @@ namespace JAM
 				switch (e.ColumnIndex)
 				{
 					case 3:
-						MessageBox.Show(((Application)applicationsGrid.Rows[e.RowIndex].Tag!).position);
+						ApplicationViewer viewer = new ApplicationViewer(((Application)applicationsGrid.Rows[e.RowIndex].Tag!).guid);
+						viewer.Show();
 						break;
 					case 4:
 						ApplicationEditor editor = new ApplicationEditor(EditorType.EDIT_APPLICATION, null, (Application)applicationsGrid.Rows[e.RowIndex].Tag!);
