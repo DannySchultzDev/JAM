@@ -47,7 +47,13 @@
 			infoLabel = new Label();
 			infoValueTextBox = new TextBox();
 			doneButton = new Button();
+			websitePanel = new Panel();
+			careerWebsitePanel = new Panel();
+			careerHomePanel = new Panel();
 			mainTableLayout.SuspendLayout();
+			websitePanel.SuspendLayout();
+			careerWebsitePanel.SuspendLayout();
+			careerHomePanel.SuspendLayout();
 			SuspendLayout();
 			// 
 			// mainTableLayout
@@ -61,11 +67,11 @@
 			mainTableLayout.Controls.Add(applicationAmountLabel, 0, 1);
 			mainTableLayout.Controls.Add(applicationAmountValueLabel, 1, 1);
 			mainTableLayout.Controls.Add(websiteLabel, 0, 2);
-			mainTableLayout.Controls.Add(websiteValueLabel, 1, 2);
+			mainTableLayout.Controls.Add(websitePanel, 1, 2);
 			mainTableLayout.Controls.Add(careerWebsiteLabel, 0, 3);
-			mainTableLayout.Controls.Add(careerWebsiteValueLabel, 1, 3);
+			mainTableLayout.Controls.Add(careerWebsitePanel, 1, 3);
 			mainTableLayout.Controls.Add(careerHomeLabel, 0, 4);
-			mainTableLayout.Controls.Add(careerHomeValueLabel, 1, 4);
+			mainTableLayout.Controls.Add(careerHomePanel, 1, 4);
 			mainTableLayout.Controls.Add(emailLabel, 0, 5);
 			mainTableLayout.Controls.Add(emailValueLabel, 1, 5);
 			mainTableLayout.Controls.Add(passwordLabel, 0, 6);
@@ -87,6 +93,7 @@
 			mainTableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 40F));
 			mainTableLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
 			mainTableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 50F));
+			mainTableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
 			mainTableLayout.Size = new Size(463, 636);
 			mainTableLayout.TabIndex = 0;
 			// 
@@ -143,11 +150,10 @@
 			// websiteValueLabel
 			// 
 			websiteValueLabel.AutoSize = true;
-			mainTableLayout.SetColumnSpan(websiteValueLabel, 2);
 			websiteValueLabel.Dock = DockStyle.Fill;
-			websiteValueLabel.Location = new Point(153, 100);
+			websiteValueLabel.Location = new Point(0, 0);
 			websiteValueLabel.Name = "websiteValueLabel";
-			websiteValueLabel.Size = new Size(307, 40);
+			websiteValueLabel.Size = new Size(0, 25);
 			websiteValueLabel.TabIndex = 5;
 			websiteValueLabel.LinkClicked += LinkClicked;
 			// 
@@ -164,11 +170,10 @@
 			// careerWebsiteValueLabel
 			// 
 			careerWebsiteValueLabel.AutoSize = true;
-			mainTableLayout.SetColumnSpan(careerWebsiteValueLabel, 2);
 			careerWebsiteValueLabel.Dock = DockStyle.Fill;
-			careerWebsiteValueLabel.Location = new Point(153, 140);
+			careerWebsiteValueLabel.Location = new Point(0, 0);
 			careerWebsiteValueLabel.Name = "careerWebsiteValueLabel";
-			careerWebsiteValueLabel.Size = new Size(307, 40);
+			careerWebsiteValueLabel.Size = new Size(0, 25);
 			careerWebsiteValueLabel.TabIndex = 7;
 			careerWebsiteValueLabel.LinkClicked += LinkClicked;
 			// 
@@ -185,11 +190,10 @@
 			// careerHomeValueLabel
 			// 
 			careerHomeValueLabel.AutoSize = true;
-			mainTableLayout.SetColumnSpan(careerHomeValueLabel, 2);
 			careerHomeValueLabel.Dock = DockStyle.Fill;
-			careerHomeValueLabel.Location = new Point(153, 180);
+			careerHomeValueLabel.Location = new Point(0, 0);
 			careerHomeValueLabel.Name = "careerHomeValueLabel";
-			careerHomeValueLabel.Size = new Size(307, 40);
+			careerHomeValueLabel.Size = new Size(0, 25);
 			careerHomeValueLabel.TabIndex = 9;
 			careerHomeValueLabel.LinkClicked += LinkClicked;
 			// 
@@ -278,6 +282,36 @@
 			doneButton.UseVisualStyleBackColor = true;
 			doneButton.Click += doneButton_Click;
 			// 
+			// websitePanel
+			// 
+			mainTableLayout.SetColumnSpan(websitePanel, 2);
+			websitePanel.Controls.Add(websiteValueLabel);
+			websitePanel.Dock = DockStyle.Fill;
+			websitePanel.Location = new Point(153, 103);
+			websitePanel.Name = "websitePanel";
+			websitePanel.Size = new Size(307, 34);
+			websitePanel.TabIndex = 18;
+			// 
+			// careerWebsitePanel
+			// 
+			mainTableLayout.SetColumnSpan(careerWebsitePanel, 2);
+			careerWebsitePanel.Controls.Add(careerWebsiteValueLabel);
+			careerWebsitePanel.Dock = DockStyle.Fill;
+			careerWebsitePanel.Location = new Point(153, 143);
+			careerWebsitePanel.Name = "careerWebsitePanel";
+			careerWebsitePanel.Size = new Size(307, 34);
+			careerWebsitePanel.TabIndex = 19;
+			// 
+			// careerHomePanel
+			// 
+			mainTableLayout.SetColumnSpan(careerHomePanel, 2);
+			careerHomePanel.Controls.Add(careerHomeValueLabel);
+			careerHomePanel.Dock = DockStyle.Fill;
+			careerHomePanel.Location = new Point(153, 183);
+			careerHomePanel.Name = "careerHomePanel";
+			careerHomePanel.Size = new Size(307, 34);
+			careerHomePanel.TabIndex = 20;
+			// 
 			// CompanyViewer
 			// 
 			AutoScaleDimensions = new SizeF(10F, 25F);
@@ -291,6 +325,12 @@
 			Load += CompanyViewer_Load;
 			mainTableLayout.ResumeLayout(false);
 			mainTableLayout.PerformLayout();
+			websitePanel.ResumeLayout(false);
+			websitePanel.PerformLayout();
+			careerWebsitePanel.ResumeLayout(false);
+			careerWebsitePanel.PerformLayout();
+			careerHomePanel.ResumeLayout(false);
+			careerHomePanel.PerformLayout();
 			ResumeLayout(false);
 		}
 
@@ -315,5 +355,8 @@
 		private TextBox infoValueTextBox;
 		private Button doneButton;
 		private TextBox passwordValueTextBox;
+		private Panel websitePanel;
+		private Panel careerWebsitePanel;
+		private Panel careerHomePanel;
 	}
 }
