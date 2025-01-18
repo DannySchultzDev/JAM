@@ -63,7 +63,7 @@ namespace JAM
 			websiteValueLabel.Text = company.website;
 			careerWebsiteValueLabel.Text = company.careerWebsite;
 			careerHomeValueLabel.Text = company.careerHome;
-			emailValueLabel.Text = company.email;
+			emailValueTextBox.Text = company.email;
 			passwordValueTextBox.Text = company.password;
 			infoValueTextBox.Text = company.info;
 		}

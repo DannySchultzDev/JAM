@@ -34,22 +34,22 @@
 			applicationAmountLabel = new Label();
 			applicationAmountValueLabel = new Label();
 			websiteLabel = new Label();
+			websitePanel = new Panel();
 			websiteValueLabel = new LinkLabel();
 			careerWebsiteLabel = new Label();
+			careerWebsitePanel = new Panel();
 			careerWebsiteValueLabel = new LinkLabel();
 			careerHomeLabel = new Label();
+			careerHomePanel = new Panel();
 			careerHomeValueLabel = new LinkLabel();
 			emailLabel = new Label();
-			emailValueLabel = new Label();
 			passwordLabel = new Label();
 			passwordValueTextBox = new TextBox();
 			passwordViewButton = new Button();
 			infoLabel = new Label();
 			infoValueTextBox = new TextBox();
 			doneButton = new Button();
-			websitePanel = new Panel();
-			careerWebsitePanel = new Panel();
-			careerHomePanel = new Panel();
+			emailValueTextBox = new TextBox();
 			mainTableLayout.SuspendLayout();
 			websitePanel.SuspendLayout();
 			careerWebsitePanel.SuspendLayout();
@@ -73,7 +73,7 @@
 			mainTableLayout.Controls.Add(careerHomeLabel, 0, 4);
 			mainTableLayout.Controls.Add(careerHomePanel, 1, 4);
 			mainTableLayout.Controls.Add(emailLabel, 0, 5);
-			mainTableLayout.Controls.Add(emailValueLabel, 1, 5);
+			mainTableLayout.Controls.Add(emailValueTextBox, 1, 5);
 			mainTableLayout.Controls.Add(passwordLabel, 0, 6);
 			mainTableLayout.Controls.Add(passwordValueTextBox, 1, 6);
 			mainTableLayout.Controls.Add(passwordViewButton, 2, 6);
@@ -147,6 +147,16 @@
 			websiteLabel.TabIndex = 4;
 			websiteLabel.Text = "Website:";
 			// 
+			// websitePanel
+			// 
+			mainTableLayout.SetColumnSpan(websitePanel, 2);
+			websitePanel.Controls.Add(websiteValueLabel);
+			websitePanel.Dock = DockStyle.Fill;
+			websitePanel.Location = new Point(153, 103);
+			websitePanel.Name = "websitePanel";
+			websitePanel.Size = new Size(307, 34);
+			websitePanel.TabIndex = 18;
+			// 
 			// websiteValueLabel
 			// 
 			websiteValueLabel.AutoSize = true;
@@ -166,6 +176,16 @@
 			careerWebsiteLabel.Size = new Size(144, 40);
 			careerWebsiteLabel.TabIndex = 6;
 			careerWebsiteLabel.Text = "Career Website:";
+			// 
+			// careerWebsitePanel
+			// 
+			mainTableLayout.SetColumnSpan(careerWebsitePanel, 2);
+			careerWebsitePanel.Controls.Add(careerWebsiteValueLabel);
+			careerWebsitePanel.Dock = DockStyle.Fill;
+			careerWebsitePanel.Location = new Point(153, 143);
+			careerWebsitePanel.Name = "careerWebsitePanel";
+			careerWebsitePanel.Size = new Size(307, 34);
+			careerWebsitePanel.TabIndex = 19;
 			// 
 			// careerWebsiteValueLabel
 			// 
@@ -187,6 +207,16 @@
 			careerHomeLabel.TabIndex = 8;
 			careerHomeLabel.Text = "Career Home:";
 			// 
+			// careerHomePanel
+			// 
+			mainTableLayout.SetColumnSpan(careerHomePanel, 2);
+			careerHomePanel.Controls.Add(careerHomeValueLabel);
+			careerHomePanel.Dock = DockStyle.Fill;
+			careerHomePanel.Location = new Point(153, 183);
+			careerHomePanel.Name = "careerHomePanel";
+			careerHomePanel.Size = new Size(307, 34);
+			careerHomePanel.TabIndex = 20;
+			// 
 			// careerHomeValueLabel
 			// 
 			careerHomeValueLabel.AutoSize = true;
@@ -206,16 +236,6 @@
 			emailLabel.Size = new Size(144, 40);
 			emailLabel.TabIndex = 10;
 			emailLabel.Text = "Email:";
-			// 
-			// emailValueLabel
-			// 
-			emailValueLabel.AutoSize = true;
-			mainTableLayout.SetColumnSpan(emailValueLabel, 2);
-			emailValueLabel.Dock = DockStyle.Fill;
-			emailValueLabel.Location = new Point(153, 220);
-			emailValueLabel.Name = "emailValueLabel";
-			emailValueLabel.Size = new Size(307, 40);
-			emailValueLabel.TabIndex = 11;
 			// 
 			// passwordLabel
 			// 
@@ -282,35 +302,15 @@
 			doneButton.UseVisualStyleBackColor = true;
 			doneButton.Click += doneButton_Click;
 			// 
-			// websitePanel
+			// emailValueTextBox
 			// 
-			mainTableLayout.SetColumnSpan(websitePanel, 2);
-			websitePanel.Controls.Add(websiteValueLabel);
-			websitePanel.Dock = DockStyle.Fill;
-			websitePanel.Location = new Point(153, 103);
-			websitePanel.Name = "websitePanel";
-			websitePanel.Size = new Size(307, 34);
-			websitePanel.TabIndex = 18;
-			// 
-			// careerWebsitePanel
-			// 
-			mainTableLayout.SetColumnSpan(careerWebsitePanel, 2);
-			careerWebsitePanel.Controls.Add(careerWebsiteValueLabel);
-			careerWebsitePanel.Dock = DockStyle.Fill;
-			careerWebsitePanel.Location = new Point(153, 143);
-			careerWebsitePanel.Name = "careerWebsitePanel";
-			careerWebsitePanel.Size = new Size(307, 34);
-			careerWebsitePanel.TabIndex = 19;
-			// 
-			// careerHomePanel
-			// 
-			mainTableLayout.SetColumnSpan(careerHomePanel, 2);
-			careerHomePanel.Controls.Add(careerHomeValueLabel);
-			careerHomePanel.Dock = DockStyle.Fill;
-			careerHomePanel.Location = new Point(153, 183);
-			careerHomePanel.Name = "careerHomePanel";
-			careerHomePanel.Size = new Size(307, 34);
-			careerHomePanel.TabIndex = 20;
+			mainTableLayout.SetColumnSpan(emailValueTextBox, 2);
+			emailValueTextBox.Dock = DockStyle.Fill;
+			emailValueTextBox.Location = new Point(153, 223);
+			emailValueTextBox.Name = "emailValueTextBox";
+			emailValueTextBox.ReadOnly = true;
+			emailValueTextBox.Size = new Size(307, 31);
+			emailValueTextBox.TabIndex = 11;
 			// 
 			// CompanyViewer
 			// 
@@ -348,7 +348,6 @@
 		private Label careerHomeLabel;
 		private LinkLabel careerHomeValueLabel;
 		private Label emailLabel;
-		private Label emailValueLabel;
 		private Label passwordLabel;
 		private Button passwordViewButton;
 		private Label infoLabel;
@@ -358,5 +357,6 @@
 		private Panel websitePanel;
 		private Panel careerWebsitePanel;
 		private Panel careerHomePanel;
+		private TextBox emailValueTextBox;
 	}
 }
