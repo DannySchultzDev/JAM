@@ -175,5 +175,11 @@ namespace JAM
 				}
 			}
 		}
+
+		private void creditsButton_Click(object sender, EventArgs e)
+		{
+			Credits credits = new Credits();
+			credits.Show();
+		}
 	}
 }
