@@ -181,5 +181,11 @@ namespace JAM
 			Credits credits = new Credits();
 			credits.Show();
 		}
+
+		private void quickStatsButton_Click(object sender, EventArgs e)
+		{
+			QuickStats quickStats = new QuickStats();
+			quickStats.Show();
+		}
 	}
 }

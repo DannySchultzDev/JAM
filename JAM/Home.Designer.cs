@@ -102,6 +102,7 @@
 			quickStatsButton.TabIndex = 3;
 			quickStatsButton.Text = "Quick Stats";
 			quickStatsButton.UseVisualStyleBackColor = true;
+			quickStatsButton.Click += quickStatsButton_Click;
 			// 
 			// settingsButton
 			// 

@@ -10,8 +10,8 @@ namespace JAM
 {
 	public static class FileManager
 	{
-		public static string appDataString = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-		public static string userDataFolder = Path.Combine(appDataString, "JAM");
+		public static readonly string appDataString = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+		public static readonly string userDataFolder = Path.Combine(appDataString, "JAM");
 		
 		public static readonly string companiesFolder = Path.Combine(userDataFolder, "Companies");
 		public static readonly string applicationsFolder = Path.Combine(userDataFolder, "Applications");
@@ -19,8 +19,10 @@ namespace JAM
 		public static readonly string settingsFolder = Path.Combine(userDataFolder, "Settings");
 		public static readonly string resumesFolder = Path.Combine(userDataFolder, "Resumes");
 
-		public static string settingsFileName = "Settings.xml";
-		public static string keyFileName = "Key.txt";
+		public static readonly string settingsFileName = "Settings.xml";
+		public static readonly string keyFileName = "Key.txt";
+		public static readonly string quickStatsFileName = "Quick Stats.xml";
+		public static readonly string skillsFileName = "Skills.xml";
 
 		public static void EnsureAllFoldersExist()
 		{
@@ -161,7 +163,9 @@ namespace JAM
 		ROOT,
 		IV,
 		GUID,
+		INDEX,
 		DATA,
+		VALUE,
 		PASSWORD_PROTECTION_TYPE,
 		PASSWORD,
 		NAME,
