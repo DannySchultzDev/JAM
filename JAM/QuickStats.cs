@@ -15,7 +15,7 @@ namespace JAM
 	{
 		public static QuickStats? instance = null;
 
-		private bool statusChanged = false;
+		public bool statusChanged = false;
 
 		public QuickStats()
 		{
@@ -295,6 +295,12 @@ namespace JAM
 				e.RowIndex > -1 &&
 				!string.IsNullOrEmpty((string)mainDataGridView[2, e.RowIndex].Value))
 				Clipboard.SetText((string)mainDataGridView[2, e.RowIndex].Value);
+		}
+
+		private void cancelButton_Click(object sender, EventArgs e)
+		{
+			statusChanged = false;
+			Close();
 		}
 	}
 }

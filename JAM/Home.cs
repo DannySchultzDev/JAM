@@ -152,12 +152,22 @@ namespace JAM
 
 		private void Home_FormClosing(object sender, FormClosingEventArgs e)
 		{
+			if (QuickStats.instance != null && QuickStats.instance.statusChanged)
+			{
+				if (MessageBox.Show("Quick Stats are open with unsaved changes. Continue closing?",
+					"Close?", MessageBoxButtons.OKCancel) != DialogResult.OK)
+				{
+					e.Cancel = true;
+					return;
+				}
+			}
 			if (applicationEditors.Count > 0)
 			{
 				if (MessageBox.Show("Application editors are open. Continue closing?",
 					"Close?", MessageBoxButtons.OKCancel) != DialogResult.OK)
 				{
 					e.Cancel = true;
+					return;
 				}
 				else
 				{
