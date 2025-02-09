@@ -52,7 +52,7 @@ namespace JAM
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show("Error reading company information from xml: " + ex.Message);
+				MessageBox.Show("Error reading resume information from xml: " + ex.Message);
 				return;
 			}
 			finally
@@ -78,7 +78,7 @@ namespace JAM
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show("Error converting company to xml: " + ex.Message);
+				MessageBox.Show("Error converting resume to xml: " + ex.Message);
 			}
 
 			return xmlDocument;

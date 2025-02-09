@@ -37,11 +37,6 @@ namespace JAM
 				instance = this;
 			}
 
-			DataGridViewColumn indexColumn = new DataGridViewColumn();
-			indexColumn.CellTemplate = new DataGridViewTextBoxCell();
-			indexColumn.Visible = false;
-			mainDataGridView.Columns.Add(indexColumn);
-
 			DataGridViewColumn statNameColumn = new DataGridViewColumn();
 			statNameColumn.HeaderText = "Name";
 			statNameColumn.CellTemplate = new DataGridViewTextBoxCell();
@@ -59,89 +54,18 @@ namespace JAM
 			mainDataGridView.Columns.Add(copyButtonColumn);
 			copyButtonColumn.Width = 100;
 
-			Dictionary<int, (string name, string value)> stats = new Dictionary<int, (string name, string value)>();
-			XmlDocument? statsXmlDocument = FileManager.TryGetXml(FileType.QUICK_STAT, FileManager.quickStatsFileName);
-			if (statsXmlDocument != null)
+			Stats stats = Home.stats;
+			foreach (var stat in stats.stats)
 			{
-				try
-				{
-					XmlElement root = statsXmlDocument.DocumentElement!;
-					foreach (XmlNode node in root.ChildNodes)
-					{
-						try
-						{
-							int index;
-							string name;
-							string value;
-
-							index = int.Parse(node.Attributes![XmlNodeName.INDEX.ToString()]!.Value);
-							XmlNode nameNode = node.SelectSingleNode(XmlNodeName.NAME.ToString())!;
-							name = EncryptionManager.Decrypt(nameNode.InnerText,
-								nameNode.Attributes![XmlNodeName.IV.ToString()]!.Value);
-							XmlNode valueNode = node.SelectSingleNode(XmlNodeName.VALUE.ToString())!;
-							value = EncryptionManager.Decrypt(valueNode.InnerText,
-								valueNode.Attributes![XmlNodeName.IV.ToString()]!.Value);
-
-							stats.Add(index, (name, value));
-						}
-						catch { }
-					}
-				}
-				catch { }
-			}
-			else
-			{
-				stats.Add(0, ("Email", ""));
-				stats.Add(1, ("Phone Number", ""));
-				stats.Add(2, ("Address", ""));
-				stats.Add(3, ("Address Line 2", ""));
-				stats.Add(4, ("LinkedIn", ""));
-			}
-
-			for (int i = 0; stats.Count > 0; ++i)
-			{
-				if (!stats.TryGetValue(i, out (string name, string value) stat))
-					continue;
-
-				mainDataGridView.Rows.Add(i, stat.name, stat.value);
-				stats.Remove(i);
-			}
-
-			PriorityQueue<string, int> skills = new PriorityQueue<string, int>();
-			XmlDocument? skillsXmlDocument = FileManager.TryGetXml(FileType.QUICK_STAT, FileManager.skillsFileName);
-			if (skillsXmlDocument != null)
-			{
-				try
-				{
-					XmlElement root = skillsXmlDocument.DocumentElement!;
-					foreach (XmlNode node in root.ChildNodes)
-					{
-						try
-						{
-							int index;
-							string skill;
-
-							index = int.Parse(node.Attributes![XmlNodeName.INDEX.ToString()]!.Value);
-							skill = EncryptionManager.Decrypt(node.InnerText,
-								node.Attributes![XmlNodeName.IV.ToString()]!.Value);
-
-							skills.Enqueue(skill, index);
-						}
-						catch { }
-					}
-				}
-				catch { }
+				mainDataGridView.Rows.Add(stat.name, stat.value);
 			}
 
 			StringBuilder sb = new StringBuilder();
-			while (skills.Count > 1)
+			foreach (string skill in Home.skills.skills)
 			{
-				sb.Append(skills.Dequeue());
-				sb.Append(", ");
-			}
-			if (skills.Count > 0)
-			{
-				sb.Append(skills.Dequeue());
+				if (sb.Length > 0)
+					sb.Append(", ");
+				sb.Append(skill);
 			}
 			skillsTextBox.Text = sb.ToString();
 
@@ -157,7 +81,7 @@ namespace JAM
 
 				switch (e.ColumnIndex)
 				{
-					case 3:
+					case 2:
 						e.Paint(e.CellBounds, DataGridViewPaintParts.All);
 
 						int w = Properties.Resources.Copy.Width;
@@ -191,74 +115,47 @@ namespace JAM
 		{
 			try
 			{
-				StringBuilder sb = new StringBuilder();
+				StringBuilder errors = new StringBuilder();
 
-				XmlDocument statsXmlDocument = new XmlDocument();
-
-				XmlElement statsRoot = statsXmlDocument.CreateElement("Root");
-				statsXmlDocument.AppendChild(statsRoot);
+				Stats stats = new Stats(new List<(string name, string value)>());
 
 				foreach (DataGridViewRow row in mainDataGridView.Rows)
 				{
 					try
 					{
 						int index = row.Index;
-						string name = (string)row.Cells[1].Value;
-						string value = (string)row.Cells[2].Value;
+						string name = (string)row.Cells[0].Value;
+						string value = (string)row.Cells[1].Value;
 
 						if (string.IsNullOrWhiteSpace(name) && string.IsNullOrWhiteSpace(value))
 							continue;
 
-						XmlElement skillElement = statsXmlDocument.CreateElement("Stat");
-						skillElement.SetAttribute(XmlNodeName.INDEX.ToString(), index.ToString());
-
-						XmlElement nameElement = statsXmlDocument.CreateElement(XmlNodeName.NAME.ToString());
-						nameElement.InnerText = EncryptionManager.Encrypt(name, out string nameIV);
-						nameElement.SetAttribute(XmlNodeName.IV.ToString(), nameIV);
-						skillElement.AppendChild(nameElement);
-
-						XmlElement valueElement = statsXmlDocument.CreateElement(XmlNodeName.VALUE.ToString());
-						valueElement.InnerText = EncryptionManager.Encrypt(value, out string valueIV);
-						valueElement.SetAttribute(XmlNodeName.IV.ToString(), valueIV);
-						skillElement.AppendChild(valueElement);
-
-						statsRoot.AppendChild(skillElement);
+						stats.stats.Add((name, value));
 					}
 					catch (Exception ex)
 					{
-						sb.Append("\nRow " + row.Index + 1 + " of skills has the error: " + ex.Message);
+						errors.Append("\nRow " + row.Index + 1 + " of skills has the error: " + ex.Message);
 					}
 				}
 
-				Queue<string> skills = new Queue<string>();
-				Queue<string> skillsUpperCase = new Queue<string>();
+				Skills skills = new Skills(new List<string>());
+				List<string> skillsUpperCase = new List<string>();
 				string[] skillsArray = skillsTextBox.Text.Split(',');
 				foreach (string skill in skillsArray)
 				{
 					if (skillsUpperCase.Contains(skill.Trim().ToUpper()))
 						continue;
-					skills.Enqueue(skill.Trim());
-					skillsUpperCase.Enqueue(skill.Trim().ToUpper());
+					skills.skills.Add(skill.Trim());
+					skillsUpperCase.Add(skill.Trim().ToUpper());
 				}
 
-				XmlDocument skillsXmlDocutment = new XmlDocument();
-				XmlElement skillsRoot = skillsXmlDocutment.CreateElement("Root");
-				skillsXmlDocutment.AppendChild(skillsRoot);
+				if (errors.Length > 0)
+					throw new Exception(errors.ToString());
 
-				for (int i = 0; skills.Count > 0; ++i)
-				{
-					XmlElement skill = skillsXmlDocutment.CreateElement("Skill");
-					skill.InnerText = EncryptionManager.Encrypt(skills.Dequeue(), out string IV);
-					skill.SetAttribute(XmlNodeName.IV.ToString(), IV);
-					skill.SetAttribute(XmlNodeName.INDEX.ToString(), i.ToString());
-					skillsRoot.AppendChild(skill);
-				}
-
-				if (sb.Length > 0)
-					throw new Exception(sb.ToString());
-
-				FileManager.SaveXml(statsXmlDocument, FileType.QUICK_STAT, FileManager.quickStatsFileName);
-				FileManager.SaveXml(skillsXmlDocutment, FileType.QUICK_STAT, FileManager.skillsFileName);
+				Home.stats = stats;
+				FileManager.SaveXml(stats.ConvertToXml(), FileType.QUICK_STAT, FileManager.quickStatsFileName);
+				Home.skills = skills;
+				FileManager.SaveXml(skills.ConvertToXml(), FileType.QUICK_STAT, FileManager.skillsFileName);
 
 				statusChanged = false;
 				Close();
@@ -291,10 +188,10 @@ namespace JAM
 
 		private void mainDataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
 		{
-			if (e.ColumnIndex == 3 &&
+			if (e.ColumnIndex == 2 &&
 				e.RowIndex > -1 &&
-				!string.IsNullOrEmpty((string)mainDataGridView[2, e.RowIndex].Value))
-				Clipboard.SetText((string)mainDataGridView[2, e.RowIndex].Value);
+				!string.IsNullOrEmpty((string)mainDataGridView[1, e.RowIndex].Value))
+				Clipboard.SetText((string)mainDataGridView[1, e.RowIndex].Value);
 		}
 
 		private void cancelButton_Click(object sender, EventArgs e)

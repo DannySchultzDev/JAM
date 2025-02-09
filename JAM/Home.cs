@@ -19,6 +19,10 @@ namespace JAM
 		public static Dictionary<string, Application> applications = new Dictionary<string, Application>();
 		//Resume file name - Resume
 		public static Dictionary<string, Resume> resumes = new Dictionary<string, Resume>();
+		//Stats
+		public static Stats stats = new Stats(new List<(string, string)>());
+		//Skills
+		public static Skills skills = new Skills(new List<string>());
 
 		public Home()
 		{
@@ -103,6 +107,26 @@ namespace JAM
 						}
 						Resume resume = new Resume(resumeXml);
 						resumes.Add(resume.name, resume);
+					}
+					//Stats
+					{
+						XmlDocument? statsXml = FileManager.TryGetXml(FileType.QUICK_STAT, FileManager.quickStatsFileName);
+						if (statsXml != null)
+							stats = new Stats(statsXml);
+						else
+						{
+							stats.stats.Add(("Email", ""));
+							stats.stats.Add(("Phone Number", ""));
+							stats.stats.Add(("Address", ""));
+							stats.stats.Add(("Address Line 2", ""));
+							stats.stats.Add(("LinkedIn", ""));
+						}
+					}
+					//Skills
+					{
+						XmlDocument? skillsXml = FileManager.TryGetXml(FileType.QUICK_STAT, FileManager.skillsFileName);
+						if (skillsXml != null)
+							skills = new Skills(skillsXml);
 					}
 				}
 				else
