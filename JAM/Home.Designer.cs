@@ -114,6 +114,7 @@
 			settingsButton.TabIndex = 2;
 			settingsButton.Text = "Settings";
 			settingsButton.UseVisualStyleBackColor = true;
+			settingsButton.Click += settingsButton_Click;
 			// 
 			// creditsLPictureBox
 			// 

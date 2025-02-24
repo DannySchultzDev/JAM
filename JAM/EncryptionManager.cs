@@ -12,35 +12,50 @@ namespace JAM
 	{
 		private static byte[]? key = null;
 
+		public static EncryptionType encryptionType = EncryptionType.KEY;
+		public static byte[]? tempKey = null;
+
 		private static byte[] GetPrivateKey()
 		{
-            if (key != null)
-            {
-				return key;
-            }
-            if (FileManager.TryGetFile(FileType.SETTINGS, FileManager.keyFileName, out string filepath))
+			switch (encryptionType)
 			{
-				try
-				{
-					key = ProtectedData.Unprotect(File.ReadAllBytes(filepath), null, DataProtectionScope.CurrentUser);
-					return key;
-				}
-				catch
-				{
-					MessageBox.Show("Key file has been tampered with. Please revert key file, or all data may be permenantly encrypted.");
-					return GetPrivateKey();
-				}
-			}
-			else
-			{
-				key = Aes.Create().Key;
-				byte[] protectedKey = ProtectedData.Protect(key, null, DataProtectionScope.CurrentUser);
-				if (!FileManager.TryCreateFile(FileType.SETTINGS, FileManager.keyFileName, protectedKey))
-				{
-					key = null;
-					return GetPrivateKey();
-				}
-				return key;
+				case EncryptionType.KEY:
+					if (key != null)
+					{
+						return key;
+					}
+					if (FileManager.TryGetFile(FileType.SETTINGS, FileManager.keyFileName, out string filepath))
+					{
+						try
+						{
+							key = ProtectedData.Unprotect(File.ReadAllBytes(filepath), null, DataProtectionScope.CurrentUser);
+							return key;
+						}
+						catch
+						{
+							MessageBox.Show("Key file has been tampered with. Please revert key file, or all data may be permenantly encrypted.");
+							return GetPrivateKey();
+						}
+					}
+					else
+					{
+						key = Aes.Create().Key;
+						byte[] protectedKey = ProtectedData.Protect(key, null, DataProtectionScope.CurrentUser);
+						if (!FileManager.TryCreateFile(FileType.SETTINGS, FileManager.keyFileName, protectedKey))
+						{
+							key = null;
+							return GetPrivateKey();
+						}
+						return key;
+					}
+				case EncryptionType.TEMP:
+					if (tempKey != null)
+						return tempKey;
+					throw new NullReferenceException("Temp key was not set.");
+				case EncryptionType.NONE:
+					return new byte[32];
+				default:
+					throw new NotImplementedException("Encryption type not implemented.");
 			}
 		}
 
@@ -123,5 +138,20 @@ namespace JAM
 			}
 			return sb.ToString();
 		}
+
+		public static void SetTempKey(string password)
+		{
+			using (SHA256 sha256 = SHA256.Create())
+			{
+				tempKey = sha256.ComputeHash(GetBytes(password));
+			}
+		}
 	}
+
+	public enum EncryptionType
+	{
+		KEY = 0,
+		TEMP = 1,
+		NONE = 2
+	} 
 }

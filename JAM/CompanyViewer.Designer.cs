@@ -43,13 +43,13 @@
 			careerHomePanel = new Panel();
 			careerHomeValueLabel = new LinkLabel();
 			emailLabel = new Label();
+			emailValueTextBox = new TextBox();
 			passwordLabel = new Label();
 			passwordValueTextBox = new TextBox();
 			passwordViewButton = new Button();
 			infoLabel = new Label();
 			infoValueTextBox = new TextBox();
 			doneButton = new Button();
-			emailValueTextBox = new TextBox();
 			mainTableLayout.SuspendLayout();
 			websitePanel.SuspendLayout();
 			careerWebsitePanel.SuspendLayout();
@@ -237,6 +237,16 @@
 			emailLabel.TabIndex = 10;
 			emailLabel.Text = "Email:";
 			// 
+			// emailValueTextBox
+			// 
+			mainTableLayout.SetColumnSpan(emailValueTextBox, 2);
+			emailValueTextBox.Dock = DockStyle.Fill;
+			emailValueTextBox.Location = new Point(153, 223);
+			emailValueTextBox.Name = "emailValueTextBox";
+			emailValueTextBox.ReadOnly = true;
+			emailValueTextBox.Size = new Size(307, 31);
+			emailValueTextBox.TabIndex = 11;
+			// 
 			// passwordLabel
 			// 
 			passwordLabel.AutoSize = true;
@@ -301,16 +311,6 @@
 			doneButton.Text = "Done";
 			doneButton.UseVisualStyleBackColor = true;
 			doneButton.Click += doneButton_Click;
-			// 
-			// emailValueTextBox
-			// 
-			mainTableLayout.SetColumnSpan(emailValueTextBox, 2);
-			emailValueTextBox.Dock = DockStyle.Fill;
-			emailValueTextBox.Location = new Point(153, 223);
-			emailValueTextBox.Name = "emailValueTextBox";
-			emailValueTextBox.ReadOnly = true;
-			emailValueTextBox.Size = new Size(307, 31);
-			emailValueTextBox.TabIndex = 11;
 			// 
 			// CompanyViewer
 			// 

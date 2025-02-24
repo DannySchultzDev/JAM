@@ -26,15 +26,15 @@ namespace JAM
 
 		public static void EnsureAllFoldersExist()
 		{
-			string[] folders = new string[]
-			{
+			string[] folders =
+			[
 				userDataFolder,
 				companiesFolder,
 				applicationsFolder,
 				quickStatsFolder,
 				settingsFolder,
 				resumesFolder
-			};
+			];
 
 			foreach (string folder in folders)
 			{
@@ -166,7 +166,6 @@ namespace JAM
 		INDEX,
 		DATA,
 		VALUE,
-		PASSWORD_PROTECTION_TYPE,
 		PASSWORD,
 		NAME,
 		WEBSITE,
@@ -186,6 +185,9 @@ namespace JAM
 		IMAGES,
 		RESUME,
 		COVER_LETTER_FILE_NAME,
-		COVER_LETTER
+		COVER_LETTER,
+		APPLICATION,
+		STATS,
+		SKILLS
 	}
 }

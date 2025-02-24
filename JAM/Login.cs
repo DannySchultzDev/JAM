@@ -4,10 +4,12 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
+using System.Net.Mail;
 
 namespace JAM
 {
@@ -15,7 +17,7 @@ namespace JAM
 	{
 		public bool loggedIn = false;
 
-		private string realPassword = "";
+		public string recoveryKey = Guid.NewGuid().ToString();
 
 		public Login()
 		{
@@ -24,7 +26,8 @@ namespace JAM
 
 		private void loginButton_Click(object sender, EventArgs e)
 		{
-			if (passwordTextbox.Text.Equals(realPassword))
+			if (passwordTextbox.Text.Equals(Home.password) ||
+				passwordTextbox.Text.Equals(recoveryKey))
 			{
 				loggedIn = true;
 				Close();
@@ -37,25 +40,8 @@ namespace JAM
 
 		private void Login_Load(object sender, EventArgs e)
 		{
-			XmlDocument? settings = FileManager.TryGetXml(FileType.SETTINGS, FileManager.settingsFileName);
-			if (settings == null)
-			{
-				MessageBox.Show("Settings file missing. Cannot log in.");
-				Close();
-				return;
-			}
-			try
-			{
-				XmlNode passwordNode = settings.DocumentElement!.GetElementsByTagName(
-					XmlNodeName.PASSWORD.ToString())[0]!;
-				realPassword = EncryptionManager.Decrypt(
-					passwordNode.InnerText,
-					passwordNode.Attributes![XmlNodeName.IV.ToString()]!.Value);
-			}
-			catch
-			{
-				MessageBox.Show("Error getting password. Cannot log in.");
-			}
+			if (string.IsNullOrEmpty(Home.email))
+				emailButton.Enabled = false;
 		}
 
 		private void cancelButton_Click(object sender, EventArgs e)
@@ -72,6 +58,41 @@ namespace JAM
 				passwordTextbox.PasswordChar == '\0' ?
 				JAM.Properties.Resources.CloakOrHide :
 				JAM.Properties.Resources.Visible;
+		}
+
+		private async void emailButton_Click(object sender, EventArgs e)
+		{
+			try
+			{
+				PasswordRecovery passwordRecovery = new PasswordRecovery();
+				passwordRecovery.ShowDialog();
+				string password = passwordRecovery.password;
+
+				if (string.IsNullOrEmpty(password))
+					return;
+
+				password = password.Replace(" ","");
+
+				MailMessage mail = new MailMessage();
+				mail.From = new MailAddress(Home.email, "JAM Password Recovery");
+				mail.To.Add(new MailAddress(Home.email));
+				mail.Subject = "Temporary Password Created";
+				mail.Body = "Your temporary password is:\n" +
+					recoveryKey +
+					"\nThis temporary password will only work for this login session.\n" +
+					"Feel free to delete the app password now.";
+
+				SmtpClient client = new SmtpClient("smtp.gmail.com");
+				client.Port = 587;
+				client.Credentials = new NetworkCredential(Home.email, password);
+				client.EnableSsl = true;
+
+				client.Send(mail);
+			}
+			catch (Exception ex) 
+			{
+				MessageBox.Show("Could not send recovery email: " + ex);
+			}
 		}
 	}
 }

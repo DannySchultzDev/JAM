@@ -6,8 +6,8 @@ namespace JAM
 {
 	public partial class Home : Form
 	{
-		public static PasswordProtectionType? loggedIn = null;
 		public static string password = "";
+		public static string email = "";
 
 		public static List<ApplicationEditor> applicationEditors = new List<ApplicationEditor>();
 
@@ -20,7 +20,14 @@ namespace JAM
 		//Resume file name - Resume
 		public static Dictionary<string, Resume> resumes = new Dictionary<string, Resume>();
 		//Stats
-		public static Stats stats = new Stats(new List<(string, string)>());
+		public static Stats stats = new Stats(new List<(string, string)>
+		{
+			("Email", ""),
+			("Phone Number", ""),
+			("Address", ""),
+			("Address Line 2", ""),
+			("LinkedIn", "")
+		});
 		//Skills
 		public static Skills skills = new Skills(new List<string>());
 
@@ -48,32 +55,41 @@ namespace JAM
 						throw new Exception("Password file is missing.");
 					}
 
-					XmlNode passwordProtectionTypeNode = settings.DocumentElement!.GetElementsByTagName(
-						XmlNodeName.PASSWORD_PROTECTION_TYPE.ToString())[0]!;
-					switch (Enum.Parse(typeof(PasswordProtectionType),
-						EncryptionManager.Decrypt(passwordProtectionTypeNode.InnerText,
-						passwordProtectionTypeNode.Attributes![XmlNodeName.IV.ToString()]!.Value)))
 					{
-						case PasswordProtectionType.NONE:
-							loggedIn = PasswordProtectionType.NONE;
-							break;
-						case PasswordProtectionType.LIMITED:
-							loggedIn = PasswordProtectionType.LIMITED;
-							break;
-						case PasswordProtectionType.FULL:
+						string? password = null;
+						string? email = null;
+						foreach (XmlElement element in settings.DocumentElement!.ChildNodes)
+						{
+							string decryptedElement = EncryptionManager.Decrypt(element.InnerText,
+								element.Attributes[XmlNodeName.IV.ToString()]!.Value);
+							switch (Enum.Parse(typeof(XmlNodeName), element.Name))
+							{
+								case XmlNodeName.PASSWORD:
+									password = decryptedElement;
+									break;
+								case XmlNodeName.EMAIL:
+									email = decryptedElement;
+									break;
+								default:
+									throw new Exception("Settings file has been tampered with");
+							}
+						}
+						if (password == null || email == null)
+						{
+							throw new Exception("Settings file has been tampered with.");
+						}
+						Home.password = password;
+						Home.email = email;
+					}
+
+					if (password.Length > 0)
+					{ 
 							Login login = new Login();
 							login.ShowDialog();
-							if (login.loggedIn)
-							{
-								loggedIn = PasswordProtectionType.FULL;
-							}
-							else
+							if (!login.loggedIn)
 							{
 								Close();
 							}
-							break;
-						default:
-							throw new Exception("Password type is invald.");
 					}
 
 					FileManager.EnsureAllFoldersExist();
@@ -113,14 +129,6 @@ namespace JAM
 						XmlDocument? statsXml = FileManager.TryGetXml(FileType.QUICK_STAT, FileManager.quickStatsFileName);
 						if (statsXml != null)
 							stats = new Stats(statsXml);
-						else
-						{
-							stats.stats.Add(("Email", ""));
-							stats.stats.Add(("Phone Number", ""));
-							stats.stats.Add(("Address", ""));
-							stats.stats.Add(("Address Line 2", ""));
-							stats.stats.Add(("LinkedIn", ""));
-						}
 					}
 					//Skills
 					{
@@ -142,13 +150,14 @@ namespace JAM
 					}
 					else
 					{
-						loggedIn = PasswordProtectionType.NONE;
+						password = "";
+						email = "";
 						XmlDocument xmlDocument = new XmlDocument();
 						XmlElement root = xmlDocument.CreateElement(XmlNodeName.ROOT.ToString());
 						xmlDocument.AppendChild(root);
 
-						FileManager.AddDataToXml(xmlDocument, root, PasswordProtectionType.NONE.ToString(), XmlNodeName.PASSWORD_PROTECTION_TYPE);
 						FileManager.AddDataToXml(xmlDocument, root, "", XmlNodeName.PASSWORD);
+						FileManager.AddDataToXml(xmlDocument, root, "", XmlNodeName.EMAIL);
 
 						FileManager.SaveXml(xmlDocument, FileType.SETTINGS, FileManager.settingsFileName);
 					}
@@ -179,6 +188,15 @@ namespace JAM
 			if (QuickStats.instance != null && QuickStats.instance.statusChanged)
 			{
 				if (MessageBox.Show("Quick Stats are open with unsaved changes. Continue closing?",
+					"Close?", MessageBoxButtons.OKCancel) != DialogResult.OK)
+				{
+					e.Cancel = true;
+					return;
+				}
+			}
+			if (Settings.instance != null && Settings.instance.statusChanged)
+			{
+				if (MessageBox.Show("Settings are open with unsaved changes. Continue closing?",
 					"Close?", MessageBoxButtons.OKCancel) != DialogResult.OK)
 				{
 					e.Cancel = true;
@@ -220,6 +238,12 @@ namespace JAM
 		{
 			QuickStats quickStats = new QuickStats();
 			quickStats.Show();
+		}
+
+		private void settingsButton_Click(object sender, EventArgs e)
+		{
+			Settings options = new Settings();
+			options.Show();
 		}
 	}
 }
