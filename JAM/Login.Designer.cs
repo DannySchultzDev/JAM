@@ -45,6 +45,7 @@ namespace JAM
 		/// </summary>
 		private void InitializeComponent()
 		{
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Login));
 			mainTableLayout = new TableLayoutPanel();
 			passwordLabel = new Label();
 			passwordTextbox = new TextBox();
@@ -97,7 +98,7 @@ namespace JAM
 			passwordTextbox.Name = "passwordTextbox";
 			passwordTextbox.PasswordChar = '•';
 			passwordTextbox.Size = new Size(216, 31);
-			passwordTextbox.TabIndex = 3;
+			passwordTextbox.TabIndex = 0;
 			// 
 			// passwordViewButton
 			// 
@@ -106,7 +107,7 @@ namespace JAM
 			passwordViewButton.Location = new Point(325, 3);
 			passwordViewButton.Name = "passwordViewButton";
 			passwordViewButton.Size = new Size(44, 34);
-			passwordViewButton.TabIndex = 4;
+			passwordViewButton.TabIndex = 1;
 			passwordViewButton.UseVisualStyleBackColor = true;
 			passwordViewButton.Click += passwordViewButton_Click;
 			// 
@@ -117,7 +118,7 @@ namespace JAM
 			loginButton.Location = new Point(3, 43);
 			loginButton.Name = "loginButton";
 			loginButton.Size = new Size(205, 45);
-			loginButton.TabIndex = 0;
+			loginButton.TabIndex = 3;
 			loginButton.Text = "Login";
 			loginButton.UseVisualStyleBackColor = true;
 			loginButton.Click += loginButton_Click;
@@ -129,7 +130,7 @@ namespace JAM
 			cancelButton.Location = new Point(214, 43);
 			cancelButton.Name = "cancelButton";
 			cancelButton.Size = new Size(206, 45);
-			cancelButton.TabIndex = 1;
+			cancelButton.TabIndex = 4;
 			cancelButton.Text = "Cancel";
 			cancelButton.UseVisualStyleBackColor = true;
 			cancelButton.Click += cancelButton_Click;
@@ -141,7 +142,7 @@ namespace JAM
 			emailButton.Location = new Point(375, 3);
 			emailButton.Name = "emailButton";
 			emailButton.Size = new Size(45, 34);
-			emailButton.TabIndex = 5;
+			emailButton.TabIndex = 2;
 			emailButton.UseVisualStyleBackColor = true;
 			emailButton.Click += emailButton_Click;
 			// 
@@ -152,10 +153,10 @@ namespace JAM
 			ClientSize = new Size(423, 91);
 			Controls.Add(mainTableLayout);
 			FormBorderStyle = FormBorderStyle.FixedSingle;
+			Icon = (Icon)resources.GetObject("$this.Icon");
 			MaximizeBox = false;
 			MinimizeBox = false;
 			Name = "Login";
-			ShowIcon = false;
 			Text = "Login";
 			Load += Login_Load;
 			mainTableLayout.ResumeLayout(false);

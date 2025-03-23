@@ -15,24 +15,35 @@ You should have received a copy of the GNU General Public License along with JAM
 <https://www.gnu.org/licenses/>.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
-using System.Xml.Linq;
 using System.Xml;
 
 namespace JAM
 {
 	public class Resume
 	{
+		#region Variables
+		/// <summary>
+		/// The original resume file's name.
+		/// </summary>
 		public string name;
+
+		/// <summary>
+		/// The data of the resume pdf.
+		/// </summary>
 		public string data;
 
+		/// <summary>
+		/// Used for the Resume's file name.
+		/// </summary>
 		public string guid;
+		#endregion Variables
 
+		#region Constructors
+		/// <summary>
+		/// Constructs a Resume from data.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="data"></param>
 		public Resume (
 			string name,
 			string data)
@@ -43,6 +54,12 @@ namespace JAM
 			guid = Guid.NewGuid().ToString();
 		}
 
+		/// <summary>
+		/// Constructs a Resume from an XML document.<br/>
+		/// If data cannot be found, defaults will be used. 
+		/// </summary>
+		/// <param name="xmlDocument"></param>
+		/// <exception cref="NotImplementedException"></exception>
 		public Resume(XmlDocument xmlDocument)
 		{
 			try
@@ -79,7 +96,13 @@ namespace JAM
 				guid = guid ?? Guid.NewGuid().ToString();
 			}
 		}
+		#endregion Constructors
 
+		/// <summary>
+		/// Converts the Resume to an XML document.<br/>
+		/// If invalid data is used, a message box will be shown.
+		/// </summary>
+		/// <returns>An XML representation of the Resume.</returns>
 		public XmlDocument ConvertToXml()
 		{
 			XmlDocument xmlDocument = new XmlDocument();

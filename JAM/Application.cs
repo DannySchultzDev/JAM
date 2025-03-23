@@ -15,17 +15,13 @@ You should have received a copy of the GNU General Public License along with JAM
 <https://www.gnu.org/licenses/>.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 
 namespace JAM
 {
 	public class Application
 	{
+		#region Dictionaries
 		public static readonly Dictionary<ApplicationType, string> ApplicationTypes = new Dictionary<ApplicationType, string>
 		{
 			{ApplicationType.CAREERS_WEBSITE, "Careers Website" },
@@ -44,29 +40,77 @@ namespace JAM
 			{ApplicationStatus.FLUSHED, "Flushed" },
 			{ApplicationStatus.OTHER, "Other" }
 		};
+		#endregion Dictionaries
 
+		#region Variables
+		/// <summary>
+		/// The GUID of the company the Application is tied to.
+		/// </summary>
 		public string company;
 		public string creationTime;
+		/// <summary>
+		/// The current status of the Application.
+		/// </summary>
 		public string status;
-		//statusTime is the last time you received an update to your status.
+		/// <summary>
+		/// The last time the status was updated.
+		/// </summary>
 		public string statusTime;
 
+		/// <summary>
+		/// The position the Application is for.
+		/// </summary>
 		public string position;
 		public string link;
 		public string applicationType;
+		/// <summary>
+		/// Where the position takes place.
+		/// </summary>
 		public string location;
 		public string salary;
-		//images refers to the relative folderPath for all images for this application.
+		/// <summary>
+		/// String containing all image data.<br/>
+		/// Each image is seperated by "CONT".
+		/// </summary>
 		public string images;
-		//resume refers to the resume's file name.
+		/// <summary>
+		/// The resume's file name.
+		/// </summary>
 		public string resume;
+		/// <summary>
+		/// The original file name of the cover letter.
+		/// </summary>
 		public string coverLetterFileName;
-		//coverLetter refers to the cover letter's data.
+		/// <summary>
+		/// The cover letter's data.
+		/// </summary>
 		public string coverLetter;
 		public string info;
 
+		/// <summary>
+		/// The file name of the application.
+		/// </summary>
 		public string guid;
+		#endregion Variables
 
+		#region Constructors
+		/// <summary>
+		/// Constructs an Application from data.
+		/// </summary>
+		/// <param name="company"></param>
+		/// <param name="creationTime"></param>
+		/// <param name="status"></param>
+		/// <param name="statusTime"></param>
+		/// <param name="position"></param>
+		/// <param name="link"></param>
+		/// <param name="applicationType"></param>
+		/// <param name="location"></param>
+		/// <param name="salary"></param>
+		/// <param name="images"></param>
+		/// <param name="resume"></param>
+		/// <param name="coverLetterFileName"></param>
+		/// <param name="coverLetter"></param>
+		/// <param name="info"></param>
 		public Application(
 			string company,
 			string creationTime,
@@ -101,6 +145,11 @@ namespace JAM
 			guid = Guid.NewGuid().ToString();
 		}
 
+		/// <summary>
+		/// Constructs an Application from an XML document.<br/>
+		/// If data cannot be found, defaults will be used.
+		/// </summary>
+		/// <param name="xmlDocument">The Application in XML form.</param>
 		public Application (XmlDocument xmlDocument)
 		{
 			try
@@ -185,7 +234,13 @@ namespace JAM
 				guid = guid ?? Guid.NewGuid().ToString();
 			}
 		}
+		#endregion Constructors
 
+		/// <summary>
+		/// Converts the Application to an XML document.<br/>
+		/// If invalid data is used, a message box will be shown.
+		/// </summary>
+		/// <returns>An XML representation of the Application.</returns>
 		public XmlDocument ConvertToXml()
 		{
 			XmlDocument xmlDocument = new XmlDocument();

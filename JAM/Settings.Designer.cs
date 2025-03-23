@@ -45,6 +45,7 @@ namespace JAM
 		/// </summary>
 		private void InitializeComponent()
 		{
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Settings));
 			mainTableLayout = new TableLayoutPanel();
 			passwordLabel = new Label();
 			passwordTextBox = new TextBox();
@@ -104,7 +105,7 @@ namespace JAM
 			passwordTextBox.Name = "passwordTextBox";
 			passwordTextBox.PasswordChar = '•';
 			passwordTextBox.Size = new Size(265, 31);
-			passwordTextBox.TabIndex = 1;
+			passwordTextBox.TabIndex = 0;
 			passwordTextBox.TextChanged += StatusChanged;
 			// 
 			// passwordViewButton
@@ -114,7 +115,7 @@ namespace JAM
 			passwordViewButton.Location = new Point(424, 3);
 			passwordViewButton.Name = "passwordViewButton";
 			passwordViewButton.Size = new Size(44, 34);
-			passwordViewButton.TabIndex = 2;
+			passwordViewButton.TabIndex = 1;
 			passwordViewButton.UseVisualStyleBackColor = true;
 			passwordViewButton.Click += passwordViewButton_Click;
 			// 
@@ -135,7 +136,7 @@ namespace JAM
 			emailTextBox.Location = new Point(153, 43);
 			emailTextBox.Name = "emailTextBox";
 			emailTextBox.Size = new Size(315, 31);
-			emailTextBox.TabIndex = 4;
+			emailTextBox.TabIndex = 2;
 			// 
 			// transferDataGroupBox
 			// 
@@ -174,7 +175,7 @@ namespace JAM
 			usePasswordCheckBox.Location = new Point(3, 3);
 			usePasswordCheckBox.Name = "usePasswordCheckBox";
 			usePasswordCheckBox.Size = new Size(453, 36);
-			usePasswordCheckBox.TabIndex = 0;
+			usePasswordCheckBox.TabIndex = 3;
 			usePasswordCheckBox.Text = "Use password to encrypt data?";
 			usePasswordCheckBox.UseVisualStyleBackColor = true;
 			// 
@@ -184,7 +185,7 @@ namespace JAM
 			exportButton.Location = new Point(3, 45);
 			exportButton.Name = "exportButton";
 			exportButton.Size = new Size(223, 36);
-			exportButton.TabIndex = 1;
+			exportButton.TabIndex = 4;
 			exportButton.Text = "Export Data";
 			exportButton.UseVisualStyleBackColor = true;
 			exportButton.Click += exportButton_Click;
@@ -195,7 +196,7 @@ namespace JAM
 			importButton.Location = new Point(232, 45);
 			importButton.Name = "importButton";
 			importButton.Size = new Size(224, 36);
-			importButton.TabIndex = 2;
+			importButton.TabIndex = 5;
 			importButton.Text = "Import Data";
 			importButton.UseVisualStyleBackColor = true;
 			importButton.Click += importButton_Click;
@@ -219,6 +220,7 @@ namespace JAM
 			ClientSize = new Size(471, 252);
 			Controls.Add(mainTableLayout);
 			FormBorderStyle = FormBorderStyle.FixedSingle;
+			Icon = (Icon)resources.GetObject("$this.Icon");
 			MaximizeBox = false;
 			Name = "Settings";
 			ShowIcon = false;

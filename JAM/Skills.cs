@@ -15,24 +15,33 @@ You should have received a copy of the GNU General Public License along with JAM
 <https://www.gnu.org/licenses/>.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 
 namespace JAM
 {
 	public class Skills
 	{
+		#region Variables
+		/// <summary>
+		/// List of the user's skills.
+		/// </summary>
 		public List<string> skills = new List<string>();
+		#endregion Variables
 
+		#region Constructors
+		/// <summary>
+		/// Constructs Skills from data.
+		/// </summary>
+		/// <param name="skills"></param>
 		public Skills(List<string> skills)
 		{
 			this.skills = skills;
 		}
 
+		/// <summary>
+		/// Constructs Skills from an XML document.
+		/// </summary>
+		/// <param name="xmlDocument"></param>
 		public Skills(XmlDocument xmlDocument)
 		{
 			try
@@ -61,7 +70,13 @@ namespace JAM
 				return;
 			}
 		}
+		#endregion Constructors
 
+		/// <summary>
+		/// Converts the Skills to an XML document.<br/>
+		/// If invalid data is used, a message box will be shown.
+		/// </summary>
+		/// <returns>An XML representation of the Skills.</returns>
 		public XmlDocument ConvertToXml()
 		{
 			XmlDocument xmlDocument = new XmlDocument();

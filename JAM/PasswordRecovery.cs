@@ -15,26 +15,32 @@ You should have received a copy of the GNU General Public License along with JAM
 <https://www.gnu.org/licenses/>.
 */
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
 namespace JAM
 {
 	public partial class PasswordRecovery : Form
 	{
+		#region Variables
+		/// <summary>
+		/// The app password of the user's Gmail account.<br/>
+		/// Used by the parent form.
+		/// </summary>
 		public string password;
+		#endregion Variables
+
+		#region Methods
+		/// <summary>
+		/// Base constructor
+		/// </summary>
 		public PasswordRecovery()
 		{
 			InitializeComponent();
 		}
 
+		/// <summary>
+		/// Opens the link in the user's browser.
+		/// </summary>
+		/// <param name="sender">The LinkLabel clicked</param>
+		/// <param name="e">Unused</param>
 		private void LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
 			if (!(sender is LinkLabel))
@@ -55,10 +61,17 @@ namespace JAM
 			}
 		}
 
+		/// <summary>
+		/// User has set their app password, so close the dialog.<br/>
+		/// If their is an issue with the app password the parent form will need to handle it.
+		/// </summary>
+		/// <param name="sender">Unused</param>
+		/// <param name="e">Unused</param>
 		private void doneButton_Click(object sender, EventArgs e)
 		{
 			password = passwordTextBox.Text;
 			Close();
 		}
+		#endregion Methods
 	}
 }

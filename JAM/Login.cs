@@ -15,32 +15,53 @@ You should have received a copy of the GNU General Public License along with JAM
 <https://www.gnu.org/licenses/>.
 */
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Xml;
 using System.Net.Mail;
 
 namespace JAM
 {
 	public partial class Login : Form
 	{
-		public bool loggedIn = false;
+		#region Variables
+		/// <summary>
+		/// Whether the user successfuly logged in.<br/>
+		/// Used by parent form.
+		/// </summary>
+		public bool loggedIn { get; private set; } = false;
 
+		/// <summary>
+		/// Recovery key that can be sent to the user in the event they forgot their password.<br/>
+		/// Recovery keys are session dependent and will allow for a single sign in.
+		/// </summary>
 		public string recoveryKey = Guid.NewGuid().ToString();
+		#endregion Variables
 
+		#region Lifecycle
+		/// <summary>
+		/// Base constructor
+		/// </summary>
 		public Login()
 		{
 			InitializeComponent();
 		}
 
+		/// <summary>
+		/// If the user did not set a recovery email, disable the recovery email button.
+		/// </summary>
+		/// <param name="sender">Unused</param>
+		/// <param name="e">Unused</param>
+		private void Login_Load(object sender, EventArgs e)
+		{
+			if (string.IsNullOrEmpty(Home.email))
+				emailButton.Enabled = false;
+		}
+
+		/// <summary>
+		/// Ensure the user input their password (or the recovery password).
+		/// If the user entered a valid password, close the dialog.
+		/// </summary>
+		/// <param name="sender">Unused</param>
+		/// <param name="e">Unused</param>
 		private void loginButton_Click(object sender, EventArgs e)
 		{
 			if (passwordTextbox.Text.Equals(Home.password) ||
@@ -55,17 +76,23 @@ namespace JAM
 			}
 		}
 
-		private void Login_Load(object sender, EventArgs e)
-		{
-			if (string.IsNullOrEmpty(Home.email))
-				emailButton.Enabled = false;
-		}
-
+		/// <summary>
+		/// User has decided to not enter a password, and instead wishes to close the application.
+		/// </summary>
+		/// <param name="sender">Unused</param>
+		/// <param name="e">Unused</param>
 		private void cancelButton_Click(object sender, EventArgs e)
 		{
 			Close();
 		}
+		#endregion Lifecycle
 
+		#region Miscellaneous
+		/// <summary>
+		/// Toggle the password's visibility.
+		/// </summary>
+		/// <param name="sender">Unused</param>
+		/// <param name="e">Unused</param>
 		private void passwordViewButton_Click(object sender, EventArgs e)
 		{
 			passwordTextbox.PasswordChar =
@@ -77,6 +104,12 @@ namespace JAM
 				JAM.Properties.Resources.Visible;
 		}
 
+		/// <summary>
+		/// Attempt to email the user the recovery email.<br/>
+		/// User must have a Gmail account set up as their recovery email for this to work.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private async void emailButton_Click(object sender, EventArgs e)
 		{
 			try
@@ -88,7 +121,7 @@ namespace JAM
 				if (string.IsNullOrEmpty(password))
 					return;
 
-				password = password.Replace(" ","");
+				password = password.Replace(" ", "");
 
 				MailMessage mail = new MailMessage();
 				mail.From = new MailAddress(Home.email, "JAM Password Recovery");
@@ -111,5 +144,6 @@ namespace JAM
 				MessageBox.Show("Could not send recovery email: " + ex);
 			}
 		}
+		#endregion Miscellaneous
 	}
 }

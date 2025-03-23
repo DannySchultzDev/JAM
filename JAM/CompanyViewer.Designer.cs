@@ -45,6 +45,7 @@ namespace JAM
 		/// </summary>
 		private void InitializeComponent()
 		{
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CompanyViewer));
 			mainTableLayout = new TableLayoutPanel();
 			nameLabel = new Label();
 			nameValueLabel = new Label();
@@ -172,7 +173,8 @@ namespace JAM
 			websitePanel.Location = new Point(153, 103);
 			websitePanel.Name = "websitePanel";
 			websitePanel.Size = new Size(307, 34);
-			websitePanel.TabIndex = 18;
+			websitePanel.TabIndex = 0;
+			websitePanel.TabStop = true;
 			// 
 			// websiteValueLabel
 			// 
@@ -202,7 +204,8 @@ namespace JAM
 			careerWebsitePanel.Location = new Point(153, 143);
 			careerWebsitePanel.Name = "careerWebsitePanel";
 			careerWebsitePanel.Size = new Size(307, 34);
-			careerWebsitePanel.TabIndex = 19;
+			careerWebsitePanel.TabIndex = 1;
+			careerWebsitePanel.TabStop = true;
 			// 
 			// careerWebsiteValueLabel
 			// 
@@ -232,7 +235,8 @@ namespace JAM
 			careerHomePanel.Location = new Point(153, 183);
 			careerHomePanel.Name = "careerHomePanel";
 			careerHomePanel.Size = new Size(307, 34);
-			careerHomePanel.TabIndex = 20;
+			careerHomePanel.TabIndex = 2;
+			careerHomePanel.TabStop = true;
 			// 
 			// careerHomeValueLabel
 			// 
@@ -291,7 +295,7 @@ namespace JAM
 			passwordViewButton.Location = new Point(416, 263);
 			passwordViewButton.Name = "passwordViewButton";
 			passwordViewButton.Size = new Size(44, 34);
-			passwordViewButton.TabIndex = 14;
+			passwordViewButton.TabIndex = 3;
 			passwordViewButton.UseVisualStyleBackColor = true;
 			passwordViewButton.Click += passwordViewButton_Click;
 			// 
@@ -324,7 +328,7 @@ namespace JAM
 			doneButton.Location = new Point(3, 589);
 			doneButton.Name = "doneButton";
 			doneButton.Size = new Size(457, 44);
-			doneButton.TabIndex = 17;
+			doneButton.TabIndex = 4;
 			doneButton.Text = "Done";
 			doneButton.UseVisualStyleBackColor = true;
 			doneButton.Click += doneButton_Click;
@@ -335,6 +339,7 @@ namespace JAM
 			AutoScaleMode = AutoScaleMode.Font;
 			ClientSize = new Size(463, 636);
 			Controls.Add(mainTableLayout);
+			Icon = (Icon)resources.GetObject("$this.Icon");
 			Name = "CompanyViewer";
 			ShowIcon = false;
 			Text = "Company Viewer";

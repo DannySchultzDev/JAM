@@ -15,26 +15,33 @@ You should have received a copy of the GNU General Public License along with JAM
 <https://www.gnu.org/licenses/>.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using System.Xml.Linq;
 
 namespace JAM
 {
 	public class Stats
 	{
+		#region Variables
+		/// <summary>
+		/// List of the user's stats.
+		/// </summary>
 		public List<(string name, string value)> stats = new List<(string, string)>();
+		#endregion Variables
 
+		#region Constructors
+		/// <summary>
+		/// Constructs Stats from data.
+		/// </summary>
+		/// <param name="stats"></param>
 		public Stats(List<(string, string)> stats)
 		{
 			this.stats = stats;
 		}
 
+		/// <summary>
+		/// Constructs Stats from an XML document.
+		/// </summary>
+		/// <param name="xmlDocument"></param>
 		public Stats(XmlDocument xmlDocument)
 		{
 			try
@@ -71,7 +78,13 @@ namespace JAM
 				return;
 			}
 		}
+		#endregion Constructors
 
+		/// <summary>
+		/// Converts the Stats to an XML document.<br/>
+		/// If invalid data is used, a message box will be shown.
+		/// </summary>
+		/// <returns>An XML representation of the Stats.</returns>
 		public XmlDocument ConvertToXml()
 		{
 			XmlDocument xmlDocument = new XmlDocument();

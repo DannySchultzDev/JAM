@@ -15,17 +15,13 @@ You should have received a copy of the GNU General Public License along with JAM
 <https://www.gnu.org/licenses/>.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 
 namespace JAM
 {
 	public class Company
 	{
+		#region Variables
 		public string name;
 		public string website;
 		public string careerWebsite;
@@ -34,8 +30,23 @@ namespace JAM
 		public string password;
 		public string info;
 
+		/// <summary>
+		/// Used for the Company's file name.
+		/// </summary>
 		public string guid;
+		#endregion Variables
 
+		#region Constructors
+		/// <summary>
+		/// Constructs a Company from data.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="website"></param>
+		/// <param name="careerWebsite"></param>
+		/// <param name="careerHome"></param>
+		/// <param name="email"></param>
+		/// <param name="password"></param>
+		/// <param name="info"></param>
 		public Company(
 			string name,
 			string website,
@@ -56,6 +67,12 @@ namespace JAM
 			guid = Guid.NewGuid().ToString();
 		}
 
+		/// <summary>
+		/// Constructs a Company from an XML document.<br/>
+		/// If data cannot be found, defaults will be used. 
+		/// </summary>
+		/// <param name="xmlDocument"></param>
+		/// <exception cref="NotImplementedException"></exception>
 		public Company(XmlDocument xmlDocument)
 		{
 			try
@@ -112,7 +129,13 @@ namespace JAM
 				guid = guid ?? Guid.NewGuid().ToString();
 			}
 		}
+		#endregion Constructors
 
+		/// <summary>
+		/// Converts the Company to an XML document.<br/>
+		/// If invalid data is used, a message box will be shown.
+		/// </summary>
+		/// <returns>An XML representation of the Company.</returns>
 		public XmlDocument ConvertToXml()
 		{
 			XmlDocument xmlDocument = new XmlDocument();

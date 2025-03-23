@@ -91,7 +91,7 @@ namespace JAM
 			linkLabel.Location = new Point(3, 210);
 			linkLabel.Name = "linkLabel";
 			linkLabel.Size = new Size(577, 40);
-			linkLabel.TabIndex = 1;
+			linkLabel.TabIndex = 0;
 			linkLabel.TabStop = true;
 			linkLabel.Text = "Gmail App Password Creator";
 			linkLabel.LinkClicked += LinkClicked;
@@ -102,7 +102,7 @@ namespace JAM
 			passwordTextBox.Location = new Point(3, 253);
 			passwordTextBox.Name = "passwordTextBox";
 			passwordTextBox.Size = new Size(577, 31);
-			passwordTextBox.TabIndex = 2;
+			passwordTextBox.TabIndex = 1;
 			// 
 			// doneButton
 			// 
@@ -110,7 +110,7 @@ namespace JAM
 			doneButton.Location = new Point(3, 293);
 			doneButton.Name = "doneButton";
 			doneButton.Size = new Size(577, 44);
-			doneButton.TabIndex = 3;
+			doneButton.TabIndex = 2;
 			doneButton.Text = "Done";
 			doneButton.UseVisualStyleBackColor = true;
 			doneButton.Click += doneButton_Click;
@@ -122,6 +122,7 @@ namespace JAM
 			ClientSize = new Size(583, 340);
 			Controls.Add(tableLayoutPanel1);
 			FormBorderStyle = FormBorderStyle.FixedSingle;
+			Icon = (Icon)resources.GetObject("$this.Icon");
 			MaximizeBox = false;
 			MinimizeBox = false;
 			Name = "PasswordRecovery";

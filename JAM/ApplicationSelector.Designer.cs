@@ -45,6 +45,7 @@ namespace JAM
 		/// </summary>
 		private void InitializeComponent()
 		{
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ApplicationSelector));
 			mainSplitContainer = new SplitContainer();
 			companiesTableLayoutPanel = new TableLayoutPanel();
 			companiesLabel = new Label();
@@ -88,6 +89,7 @@ namespace JAM
 			mainSplitContainer.Size = new Size(778, 687);
 			mainSplitContainer.SplitterDistance = 343;
 			mainSplitContainer.TabIndex = 0;
+			mainSplitContainer.TabStop = false;
 			// 
 			// companiesTableLayoutPanel
 			// 
@@ -173,7 +175,7 @@ namespace JAM
 			applicationsGrid.RowHeadersWidth = 62;
 			applicationsGrid.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
 			applicationsGrid.Size = new Size(772, 294);
-			applicationsGrid.TabIndex = 1;
+			applicationsGrid.TabIndex = 2;
 			applicationsGrid.CellContentClick += applicationsGrid_CellContentClick;
 			applicationsGrid.CellPainting += applicationsGrid_CellPainting;
 			// 
@@ -185,7 +187,7 @@ namespace JAM
 			statusStrip.Location = new Point(0, 0);
 			statusStrip.Name = "statusStrip";
 			statusStrip.Size = new Size(778, 32);
-			statusStrip.TabIndex = 1;
+			statusStrip.TabIndex = 3;
 			statusStrip.Text = "statusStrip1";
 			// 
 			// lastUpdateLabel
@@ -197,7 +199,7 @@ namespace JAM
 			// statusStripSpacer
 			// 
 			statusStripSpacer.Name = "statusStripSpacer";
-			statusStripSpacer.Size = new Size(533, 25);
+			statusStripSpacer.Size = new Size(555, 25);
 			statusStripSpacer.Spring = true;
 			// 
 			// refreshButton
@@ -236,11 +238,12 @@ namespace JAM
 			AutoScaleMode = AutoScaleMode.Font;
 			ClientSize = new Size(778, 744);
 			Controls.Add(mainToolStripContainer);
+			Icon = (Icon)resources.GetObject("$this.Icon");
 			Name = "ApplicationSelector";
 			ShowIcon = false;
 			Text = "Application Selector";
 			FormClosing += ApplicationSelector_FormClosing;
-			Load += ApplicationViewer_Load;
+			Load += ApplicationSelector_Load;
 			mainSplitContainer.Panel1.ResumeLayout(false);
 			mainSplitContainer.Panel2.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)mainSplitContainer).EndInit();

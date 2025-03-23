@@ -45,6 +45,7 @@ namespace JAM
 		/// </summary>
 		private void InitializeComponent()
 		{
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(QuickStats));
 			mainTableLayout = new TableLayoutPanel();
 			mainSplitContainer = new SplitContainer();
 			mainDataGridView = new DataGridView();
@@ -164,6 +165,7 @@ namespace JAM
 			skillsTextBox.ScrollBars = ScrollBars.Vertical;
 			skillsTextBox.Size = new Size(504, 277);
 			skillsTextBox.TabIndex = 2;
+			skillsTextBox.TextChanged += skillsTextBox_TextChanged;
 			// 
 			// saveButton
 			// 
@@ -171,7 +173,7 @@ namespace JAM
 			saveButton.Location = new Point(3, 667);
 			saveButton.Name = "saveButton";
 			saveButton.Size = new Size(253, 44);
-			saveButton.TabIndex = 1;
+			saveButton.TabIndex = 3;
 			saveButton.Text = "Save";
 			saveButton.UseVisualStyleBackColor = true;
 			saveButton.Click += saveButton_Click;
@@ -182,7 +184,7 @@ namespace JAM
 			cancelButton.Location = new Point(262, 667);
 			cancelButton.Name = "cancelButton";
 			cancelButton.Size = new Size(253, 44);
-			cancelButton.TabIndex = 2;
+			cancelButton.TabIndex = 4;
 			cancelButton.Text = "Cancel";
 			cancelButton.UseVisualStyleBackColor = true;
 			cancelButton.Click += cancelButton_Click;
@@ -193,6 +195,7 @@ namespace JAM
 			AutoScaleMode = AutoScaleMode.Font;
 			ClientSize = new Size(518, 714);
 			Controls.Add(mainTableLayout);
+			Icon = (Icon)resources.GetObject("$this.Icon");
 			Name = "QuickStats";
 			ShowIcon = false;
 			Text = "Quick Stats";

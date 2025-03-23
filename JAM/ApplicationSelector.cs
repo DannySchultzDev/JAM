@@ -15,33 +15,40 @@ You should have received a copy of the GNU General Public License along with JAM
 <https://www.gnu.org/licenses/>.
 */
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
 namespace JAM
 {
 	public partial class ApplicationSelector : Form
 	{
+		#region Variables
 		private static ApplicationSelector? instance = null;
 
+		/// <summary>
+		/// Dictionary connecting each Company to each of their Applications.
+		/// </summary>
 		private Dictionary<Company, List<Application>> companyApplicationDictionary = new Dictionary<Company, List<Application>>();
+		
 		private Image viewImage = Properties.Resources.Open;
 		private Image editImage = Properties.Resources.Edit;
+		#endregion Variables
 
+		#region Lifecycle
+		/// <summary>
+		/// Base constructor.
+		/// </summary>
 		public ApplicationSelector()
 		{
 			InitializeComponent();
 		}
 
-		private void ApplicationViewer_Load(object sender, EventArgs e)
+		/// <summary>
+		/// Prepares data grid views for data.<br/>
+		/// Then calls UpdateData() to fill data grid views.
+		/// </summary>
+		/// <param name="sender">Unused</param>
+		/// <param name="e">Unused</param>
+		private void ApplicationSelector_Load(object sender, EventArgs e)
 		{
+			//Ensure this is the only instance.
 			if (instance != null)
 			{
 				instance.Focus();
@@ -55,6 +62,7 @@ namespace JAM
 				instance = this;
 			}
 
+			//Load the columns of the Companies data grid view.
 			DataGridViewColumn companyNameColumn = new DataGridViewColumn();
 			companyNameColumn.Name = "Name";
 			companyNameColumn.HeaderText = "Name";
@@ -75,6 +83,8 @@ namespace JAM
 			companyEditColumn.HeaderText = "Edit";
 			companyViewColumn.CellTemplate = new DataGridViewButtonCell();
 			companiesGrid.Columns.Add(companyEditColumn);
+
+			//Load the columns of the Applications data grid view.
 			DataGridViewColumn applicationPositionColumn = new DataGridViewColumn();
 			applicationPositionColumn.Name = "Position";
 			applicationPositionColumn.HeaderText = "Position";
@@ -104,13 +114,45 @@ namespace JAM
 			UpdateData();
 		}
 
+		/// <summary>
+		/// Remove instance reference.
+		/// </summary>
+		/// <param name="sender">Unused</param>
+		/// <param name="e">Unused</param>
+		private void ApplicationSelector_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			if (this == instance)
+				instance = null;
+		}
+		#endregion Lifecycle
+
+		#region Update Data
+		/// <summary>
+		/// User has clicked refresh, so update data.
+		/// </summary>
+		/// <param name="sender">Unused</param>
+		/// <param name="e">Unused</param>
 		private void refreshButton_Click(object sender, EventArgs e)
 		{
 			UpdateData();
 		}
 
+		/// <summary>
+		/// Warn the user that the data they are viewing is out of date if an application selector is open.
+		/// </summary>
+		public static void WarnDataUpdate()
+		{
+			if (instance == null)
+				return;
+			instance.refreshButton.DisplayStyle = ToolStripItemDisplayStyle.ImageAndText;
+		}
+
+		/// <summary>
+		/// Fill the data grid views with updated data.
+		/// </summary>
 		private void UpdateData()
 		{
+			//Update the dictionary to have newest data.
 			companyApplicationDictionary.Clear();
 
 			foreach (Company company in Home.companiesN.Values)
@@ -130,12 +172,18 @@ namespace JAM
 				catch { }
 			}
 
+			//Update data grid views.
 			UpdateCompanyRows();
 			UpdateApplicationsRows();
+
+			//Update warning UI.
 			lastUpdateLabel.Text = "Last update: " + DateTime.Now.ToString();
 			refreshButton.DisplayStyle = ToolStripItemDisplayStyle.Text;
 		}
 
+		/// <summary>
+		/// Add each company in the dictionary to the data grid view.
+		/// </summary>
 		private void UpdateCompanyRows()
 		{
 			companiesGrid.Rows.Clear();
@@ -147,11 +195,9 @@ namespace JAM
 			}
 		}
 
-		private void companiesGrid_SelectionChanged(object sender, EventArgs e)
-		{
-			UpdateApplicationsRows();
-		}
-
+		/// <summary>
+		/// Add each application in the the currently selected company to the data grid view.
+		/// </summary>
 		private void UpdateApplicationsRows()
 		{
 			applicationsGrid.Rows.Clear();
@@ -175,53 +221,24 @@ namespace JAM
 				return;
 			}
 		}
+		#endregion Update Data
 
-		private void companiesGrid_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
+		#region Input
+		/// <summary>
+		/// If the selected Company changed, show the Applications for the new Company.
+		/// </summary>
+		/// <param name="sender">Unused</param>
+		/// <param name="e">Unused</param>
+		private void companiesGrid_SelectionChanged(object sender, EventArgs e)
 		{
-			if (e.RowIndex < 0)
-				return;
-
-			switch (e.ColumnIndex)
-			{
-				case 2:
-					PaintCell(e, viewImage);
-					break;
-				case 3:
-					PaintCell(e, editImage);
-					break;
-			}
+			UpdateApplicationsRows();
 		}
 
-		private void applicationsGrid_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
-		{
-			if (e.RowIndex < 0)
-				return;
-
-			switch (e.ColumnIndex)
-			{
-				case 3:
-					PaintCell(e, viewImage);
-					break;
-				case 4:
-					PaintCell(e, editImage);
-					break;
-			}
-		}
-
-		private void PaintCell(DataGridViewCellPaintingEventArgs e, Image image)
-		{
-			e.Paint(e.CellBounds, DataGridViewPaintParts.All);
-
-			int w = image.Width;
-			int h = image.Height;
-			int x = e.CellBounds.Left + (e.CellBounds.Width - w) / 2;
-			int y = e.CellBounds.Top + (e.CellBounds.Height - h) / 2;
-
-			e.Graphics!.DrawImage(image, x, y, w, h);
-
-			e.Handled = true;
-		}
-
+		/// <summary>
+		/// Open a Company editor or viewer if the user clicked the coresponding cell.
+		/// </summary>
+		/// <param name="sender">Unused</param>
+		/// <param name="e">Event with the cell cliked info.</param>
 		private void companiesGrid_CellContentClick(object sender, DataGridViewCellEventArgs e)
 		{
 			try
@@ -241,6 +258,11 @@ namespace JAM
 			catch { }
 		}
 
+		/// <summary>
+		/// Open a Application editor or viewer if the user clicked the coresponding cell.
+		/// </summary>
+		/// <param name="sender">Unused</param>
+		/// <param name="e">Event with the cell cliked info.</param>
 		private void applicationsGrid_CellContentClick(object sender, DataGridViewCellEventArgs e)
 		{
 			try
@@ -259,21 +281,69 @@ namespace JAM
 			}
 			catch { }
 		}
+		#endregion Input
 
-		private void ApplicationSelector_FormClosing(object sender, FormClosingEventArgs e)
+		#region Cell Painting
+		/// <summary>
+		/// Paints images on the Companies' data grid view buttons.
+		/// </summary>
+		/// <param name="sender">Unused</param>
+		/// <param name="e">Event for cell info.</param>
+		private void companiesGrid_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
 		{
-			if (this == instance)
-				instance = null;
+			if (e.RowIndex < 0)
+				return;
+
+			switch (e.ColumnIndex)
+			{
+				case 2:
+					PaintCell(e, viewImage);
+					break;
+				case 3:
+					PaintCell(e, editImage);
+					break;
+			}
 		}
 
 		/// <summary>
-		/// Warn the user that the data they are viewing is out of date if an application selector is open.
+		/// Paints images on the Applications' data grid view buttons.
 		/// </summary>
-		public static void WarnDataUpdate()
+		/// <param name="sender">Unused</param>
+		/// <param name="e">Event for cell info.</param>
+		private void applicationsGrid_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
 		{
-			if (instance == null)
+			if (e.RowIndex < 0)
 				return;
-			instance.refreshButton.DisplayStyle = ToolStripItemDisplayStyle.ImageAndText;
+
+			switch (e.ColumnIndex)
+			{
+				case 3:
+					PaintCell(e, viewImage);
+					break;
+				case 4:
+					PaintCell(e, editImage);
+					break;
+			}
 		}
+
+		/// <summary>
+		/// Helper method that paints a cell of a data grid view.
+		/// </summary>
+		/// <param name="e">Event that contains cell info.</param>
+		/// <param name="image">The image to paint.</param>
+		private void PaintCell(DataGridViewCellPaintingEventArgs e, Image image)
+		{
+			e.Paint(e.CellBounds, DataGridViewPaintParts.All);
+
+			int w = image.Width;
+			int h = image.Height;
+			int x = e.CellBounds.Left + (e.CellBounds.Width - w) / 2;
+			int y = e.CellBounds.Top + (e.CellBounds.Height - h) / 2;
+
+			e.Graphics!.DrawImage(image, x, y, w, h);
+
+			e.Handled = true;
+		}
+		#endregion Cell Painting
 	}
 }

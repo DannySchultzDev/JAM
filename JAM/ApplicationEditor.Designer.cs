@@ -46,6 +46,7 @@ namespace JAM
 		private void InitializeComponent()
 		{
 			components = new System.ComponentModel.Container();
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ApplicationEditor));
 			mainTableLayout = new TableLayoutPanel();
 			mainTabControl = new TabControl();
 			companyTabPage = new TabPage();
@@ -745,7 +746,7 @@ namespace JAM
 			applicationResumeUploadButton.Location = new Point(455, 303);
 			applicationResumeUploadButton.Name = "applicationResumeUploadButton";
 			applicationResumeUploadButton.Size = new Size(44, 44);
-			applicationResumeUploadButton.TabIndex = 23;
+			applicationResumeUploadButton.TabIndex = 24;
 			applicationResumeUploadButton.UseVisualStyleBackColor = true;
 			applicationResumeUploadButton.Click += applicationResumeUploadButton_Click;
 			// 
@@ -770,7 +771,8 @@ namespace JAM
 			applicationCoverLetterTextBox.ReadOnly = true;
 			applicationCoverLetterTextBox.ScrollBars = ScrollBars.Vertical;
 			applicationCoverLetterTextBox.Size = new Size(246, 44);
-			applicationCoverLetterTextBox.TabIndex = 24;
+			applicationCoverLetterTextBox.TabIndex = 0;
+			applicationCoverLetterTextBox.TabStop = false;
 			applicationCoverLetterTextBox.Text = "None";
 			applicationCoverLetterTextBox.TextChanged += StatusUpdated;
 			// 
@@ -1022,6 +1024,7 @@ namespace JAM
 			AutoScaleMode = AutoScaleMode.Font;
 			ClientSize = new Size(981, 737);
 			Controls.Add(mainTableLayout);
+			Icon = (Icon)resources.GetObject("$this.Icon");
 			Name = "ApplicationEditor";
 			ShowIcon = false;
 			Text = "Application Editor";

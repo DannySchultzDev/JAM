@@ -45,6 +45,7 @@ namespace JAM
 		/// </summary>
 		private void InitializeComponent()
 		{
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ApplicationViewer));
 			textTableLayout = new TableLayoutPanel();
 			positionLabel = new Label();
 			positionValueLabel = new Label();
@@ -186,7 +187,7 @@ namespace JAM
 			companyOpenButton.Location = new Point(447, 53);
 			companyOpenButton.Name = "companyOpenButton";
 			companyOpenButton.Size = new Size(44, 44);
-			companyOpenButton.TabIndex = 4;
+			companyOpenButton.TabIndex = 0;
 			companyOpenButton.UseVisualStyleBackColor = true;
 			companyOpenButton.Click += companyOpenButton_Click;
 			// 
@@ -248,7 +249,7 @@ namespace JAM
 			linkValueLabel.Location = new Point(153, 200);
 			linkValueLabel.Name = "linkValueLabel";
 			linkValueLabel.Size = new Size(338, 50);
-			linkValueLabel.TabIndex = 10;
+			linkValueLabel.TabIndex = 1;
 			linkValueLabel.LinkClicked += linkValueLabel_LinkClicked;
 			// 
 			// applicationTypeLabel
@@ -337,7 +338,7 @@ namespace JAM
 			resumeOpenButton.Location = new Point(447, 403);
 			resumeOpenButton.Name = "resumeOpenButton";
 			resumeOpenButton.Size = new Size(44, 44);
-			resumeOpenButton.TabIndex = 19;
+			resumeOpenButton.TabIndex = 2;
 			resumeOpenButton.UseVisualStyleBackColor = true;
 			resumeOpenButton.Click += resumeOpenButton_Click;
 			// 
@@ -367,7 +368,7 @@ namespace JAM
 			coverLetterOpenButton.Location = new Point(447, 453);
 			coverLetterOpenButton.Name = "coverLetterOpenButton";
 			coverLetterOpenButton.Size = new Size(44, 44);
-			coverLetterOpenButton.TabIndex = 22;
+			coverLetterOpenButton.TabIndex = 3;
 			coverLetterOpenButton.UseVisualStyleBackColor = true;
 			coverLetterOpenButton.Click += coverLetterOpenButton_Click;
 			// 
@@ -411,6 +412,7 @@ namespace JAM
 			infoValueTextBox.ReadOnly = true;
 			infoValueTextBox.Size = new Size(338, 238);
 			infoValueTextBox.TabIndex = 26;
+			infoValueTextBox.TabStop = false;
 			// 
 			// imageLabel
 			// 
@@ -439,7 +441,7 @@ namespace JAM
 			doneButton.Location = new Point(3, 805);
 			doneButton.Name = "doneButton";
 			doneButton.Size = new Size(948, 44);
-			doneButton.TabIndex = 29;
+			doneButton.TabIndex = 4;
 			doneButton.Text = "Done";
 			doneButton.UseVisualStyleBackColor = true;
 			doneButton.Click += doneButton_Click;
@@ -460,7 +462,8 @@ namespace JAM
 			mainSplitContainer.Panel2.Controls.Add(imageTableLayout);
 			mainSplitContainer.Size = new Size(948, 796);
 			mainSplitContainer.SplitterDistance = 496;
-			mainSplitContainer.TabIndex = 1;
+			mainSplitContainer.TabIndex = 0;
+			mainSplitContainer.TabStop = false;
 			// 
 			// imageTableLayout
 			// 
@@ -509,6 +512,7 @@ namespace JAM
 			AutoScaleMode = AutoScaleMode.Font;
 			ClientSize = new Size(954, 852);
 			Controls.Add(mainTableLayout);
+			Icon = (Icon)resources.GetObject("$this.Icon");
 			Name = "ApplicationViewer";
 			ShowIcon = false;
 			Text = "Application Viewer";

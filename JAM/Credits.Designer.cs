@@ -165,6 +165,7 @@ namespace JAM
 			AutoScaleMode = AutoScaleMode.Font;
 			ClientSize = new Size(735, 602);
 			Controls.Add(mainTableLayoutPanel);
+			Icon = (Icon)resources.GetObject("$this.Icon");
 			Name = "Credits";
 			ShowIcon = false;
 			Text = "Credits";

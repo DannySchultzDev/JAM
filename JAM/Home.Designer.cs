@@ -116,7 +116,7 @@ namespace JAM
 			quickStatsButton.Location = new Point(6, 110);
 			quickStatsButton.Name = "quickStatsButton";
 			quickStatsButton.Size = new Size(360, 46);
-			quickStatsButton.TabIndex = 3;
+			quickStatsButton.TabIndex = 2;
 			quickStatsButton.Text = "Quick Stats";
 			quickStatsButton.UseVisualStyleBackColor = true;
 			quickStatsButton.Click += quickStatsButton_Click;
@@ -128,7 +128,7 @@ namespace JAM
 			settingsButton.Location = new Point(6, 162);
 			settingsButton.Name = "settingsButton";
 			settingsButton.Size = new Size(360, 46);
-			settingsButton.TabIndex = 2;
+			settingsButton.TabIndex = 3;
 			settingsButton.Text = "Settings";
 			settingsButton.UseVisualStyleBackColor = true;
 			settingsButton.Click += settingsButton_Click;
@@ -150,7 +150,7 @@ namespace JAM
 			creditsButton.Location = new Point(79, 214);
 			creditsButton.Name = "creditsButton";
 			creditsButton.Size = new Size(213, 46);
-			creditsButton.TabIndex = 7;
+			creditsButton.TabIndex = 4;
 			creditsButton.Text = "Credits && License";
 			creditsButton.UseVisualStyleBackColor = true;
 			creditsButton.Click += creditsButton_Click;

@@ -15,31 +15,41 @@ You should have received a copy of the GNU General Public License along with JAM
 <https://www.gnu.org/licenses/>.
 */
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 using System.Xml;
 
 namespace JAM
 {
 	public partial class Settings : Form
 	{
+		#region Variables
+		/// <summary>
+		/// The current instance of the Settings Form.<br/>
+		/// Used to insure only one copy is opened at a time.
+		/// </summary>
 		public static Settings? instance = null;
 
+		/// <summary>
+		/// Is the data in the form dirty.<br/>
+		/// Determines whether the user should be prompted when closing.
+		/// </summary>
 		public bool statusChanged = false;
+		#endregion Variables
 
+		#region Lifecycle
+		/// <summary>
+		/// Base constructor
+		/// </summary>
 		public Settings()
 		{
 			InitializeComponent();
 		}
 
+		/// <summary>
+		/// Ensure this is the only instance of the form.<br/>
+		/// Load data into the textboxes.
+		/// </summary>
+		/// <param name="sender">Unused</param>
+		/// <param name="e">Unused</param>
 		private void Settings_Load(object sender, EventArgs e)
 		{
 			if (instance != null)
@@ -61,6 +71,12 @@ namespace JAM
 			statusChanged = false;
 		}
 
+		/// <summary>
+		/// Prompt the user if there is dirty data.<br/>
+		/// If this is not a duplicate form, free the instance.
+		/// </summary>
+		/// <param name="sender">Unused</param>
+		/// <param name="e">If the user wants to save their data cancel the close.</param>
 		private void Settings_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			if (statusChanged &&
@@ -75,17 +91,12 @@ namespace JAM
 				instance = null;
 		}
 
-		private void passwordViewButton_Click(object sender, EventArgs e)
-		{
-			passwordTextBox.PasswordChar =
-				passwordTextBox.PasswordChar == '\0' ?
-				'•' : '\0';
-			passwordViewButton.Image =
-				passwordTextBox.PasswordChar == '\0' ?
-				JAM.Properties.Resources.CloakOrHide :
-				JAM.Properties.Resources.Visible;
-		}
-
+		/// <summary>
+		/// User is done with the form, so close it.<br/>
+		/// Save the user's data before closing.
+		/// </summary>
+		/// <param name="sender">Unused</param>
+		/// <param name="e">Unused</param>
 		private void doneButton_Click(object sender, EventArgs e)
 		{
 			try
@@ -109,16 +120,19 @@ namespace JAM
 				MessageBox.Show("Error saving new settings");
 			}
 		}
+		#endregion Lifecycle
 
-		private void StatusChanged(object sender, EventArgs e)
-		{
-			statusChanged = true;
-		}
-
+		#region Data Management
+		/// <summary>
+		/// Attempt to export all of the users data to a single file.
+		/// </summary>
+		/// <param name="sender">Unused</param>
+		/// <param name="e">Unused</param>
 		private void exportButton_Click(object sender, EventArgs e)
 		{
 			try
 			{
+				//Set encryption type.
 				if (usePasswordCheckBox.Checked)
 				{
 					EncryptionManager.encryptionType = EncryptionType.TEMP;
@@ -131,6 +145,7 @@ namespace JAM
 				XmlElement root = xmlDocument.CreateElement(XmlNodeName.ROOT.ToString());
 				xmlDocument.AppendChild(root);
 
+				//Append every file of every data type.
 				foreach (Company company in Home.companiesG.Values)
 				{
 					XmlDocument companyXml = company.ConvertToXml();
@@ -188,14 +203,21 @@ namespace JAM
 			}
 			finally
 			{
+				//Reset the encryption type.
 				EncryptionManager.encryptionType = EncryptionType.KEY;
 			}
 		}
 
+		/// <summary>
+		/// Attempt to import all of the users data from a single file.
+		/// </summary>
+		/// <param name="sender">Unused</param>
+		/// <param name="e">Unused</param>
 		private void importButton_Click(object sender, EventArgs e)
 		{
 			try
 			{
+				//Warn the user.
 				if (MessageBox.Show("Importing data will clear all pre-existing data. Continue?", "Are you sure?", MessageBoxButtons.OKCancel) != DialogResult.OK)
 				{
 					return;
@@ -203,6 +225,7 @@ namespace JAM
 
 				XmlDocument xmlDocument = new XmlDocument();
 
+				//Get the file to import
 				using (OpenFileDialog openFileDialog = new OpenFileDialog())
 				{
 					openFileDialog.Filter = "XML files (*.xml)|*.xml";
@@ -214,6 +237,7 @@ namespace JAM
 					xmlDocument.Load(openFileDialog.FileName);
 				}
 
+				//Set the encryption type.
 				if (usePasswordCheckBox.Checked)
 				{
 					EncryptionManager.encryptionType = EncryptionType.TEMP;
@@ -224,6 +248,7 @@ namespace JAM
 
 				XmlElement root = xmlDocument.DocumentElement!;
 
+				//Get the individual data objects out of the XML.
 				List<Company> companies = new List<Company>();
 				List<Application> applications = new List<Application>();
 				List<Resume> resumes = new List<Resume>();
@@ -269,6 +294,7 @@ namespace JAM
 				foreach (ApplicationViewer applicationViewer in ApplicationViewer.activeApplications.Values)
 					applicationViewer.Close();
 
+				//Set the current data to the imported data.
 				Home.companiesG.Clear();
 				Home.companiesN.Clear();
 				foreach (Company company in companies)
@@ -285,16 +311,20 @@ namespace JAM
 				Home.stats = stats;
 				Home.skills = skills;
 
+				//Reset the encryption type.
 				EncryptionManager.encryptionType = EncryptionType.KEY;
 
+				//Delete the original data's files.
 				Directory.Delete(FileManager.companiesFolder, true);
 				Directory.Delete(FileManager.applicationsFolder, true);
 				Directory.Delete(FileManager.resumesFolder, true);
 				Directory.Delete(FileManager.quickStatsFolder, true);
 
+				//Regenerate the folders.
 				FileManager.EnsureAllFoldersExist();
 
-				foreach(Company company in companies)
+				//Save the imported files.
+				foreach (Company company in companies)
 					FileManager.SaveXml(company.ConvertToXml(), FileType.COMPANY, company.guid.ToString() + ".xml");
 				foreach (Application application in applications)
 					FileManager.SaveXml(application.ConvertToXml(), FileType.APPLICATION, application.guid.ToString() + ".xml");
@@ -309,8 +339,38 @@ namespace JAM
 			}
 			finally
 			{
+				//Reset the encryption type.
 				EncryptionManager.encryptionType = EncryptionType.KEY;
 			}
 		}
+		#endregion Data Management
+
+		#region Miscelaneous
+		/// <summary>
+		/// Toggle the password's visability.
+		/// </summary>
+		/// <param name="sender">Unused</param>
+		/// <param name="e">Unused</param>
+		private void passwordViewButton_Click(object sender, EventArgs e)
+		{
+			passwordTextBox.PasswordChar =
+				passwordTextBox.PasswordChar == '\0' ?
+				'•' : '\0';
+			passwordViewButton.Image =
+				passwordTextBox.PasswordChar == '\0' ?
+				JAM.Properties.Resources.CloakOrHide :
+				JAM.Properties.Resources.Visible;
+		}
+
+		/// <summary>
+		/// Data has been changed, so mark the form as dirty.
+		/// </summary>
+		/// <param name="sender">Unused</param>
+		/// <param name="e">Unused</param>
+		private void StatusChanged(object sender, EventArgs e)
+		{
+			statusChanged = true;
+		}
+		#endregion Miscelaneous
 	}
 }

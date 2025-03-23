@@ -15,30 +15,41 @@ You should have received a copy of the GNU General Public License along with JAM
 <https://www.gnu.org/licenses/>.
 */
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Xml;
 
 namespace JAM
 {
 	public partial class QuickStats : Form
 	{
+		#region Variables
+		/// <summary>
+		/// The current instance of the QuickStats Form.<br/>
+		/// Used to insure only one copy is opened at a time.
+		/// </summary>
 		public static QuickStats? instance = null;
 
+		/// <summary>
+		/// Is the data in the form dirty.<br/>
+		/// Determines whether the user should be prompted when closing.
+		/// </summary>
 		public bool statusChanged = false;
+		#endregion Variables
 
+		#region Lifecycle
+		/// <summary>
+		/// Base construction
+		/// </summary>
 		public QuickStats()
 		{
 			InitializeComponent();
 		}
 
+		/// <summary>
+		/// Ensure this is the only instance of the form.<br/>
+		/// Load data into the DataGridView and TextBox.
+		/// </summary>
+		/// <param name="sender">Unused</param>
+		/// <param name="e">Unused</param>
 		private void QuickStats_Load(object sender, EventArgs e)
 		{
 			if (instance != null)
@@ -89,6 +100,110 @@ namespace JAM
 			statusChanged = false;
 		}
 
+		/// <summary>
+		/// Prompt the user if there is dirty data.<br/>
+		/// If this is not a duplicate form, free the instance.
+		/// </summary>
+		/// <param name="sender">Unused</param>
+		/// <param name="e">If the user wants to save their data cancel the close.</param>
+		private void QuickStats_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			if (statusChanged &&
+				MessageBox.Show("You have made changes. Discard changes and close quick stats?",
+				"Close?", MessageBoxButtons.OKCancel) != DialogResult.OK)
+			{
+				e.Cancel = true;
+				return;
+			}
+
+			if (instance == this)
+				instance = null;
+		}
+
+		/// <summary>
+		/// User is done with the form, so close it.<br/>
+		/// Save the user's data before closing.
+		/// </summary>
+		/// <param name="sender">Unused</param>
+		/// <param name="e">Unused</param>
+		private void saveButton_Click(object sender, EventArgs e)
+		{
+			try
+			{
+				StringBuilder errors = new StringBuilder();
+
+				//Get Stats organized.
+				Stats stats = new Stats(new List<(string name, string value)>());
+
+				foreach (DataGridViewRow row in mainDataGridView.Rows)
+				{
+					try
+					{
+						int index = row.Index;
+						string name = (string)row.Cells[0].Value;
+						string value = (string)row.Cells[1].Value;
+
+						if (string.IsNullOrWhiteSpace(name) && string.IsNullOrWhiteSpace(value))
+							continue;
+
+						stats.stats.Add((name, value));
+					}
+					catch (Exception ex)
+					{
+						errors.Append("\nRow " + row.Index + 1 + " of skills has the error: " + ex.Message);
+					}
+				}
+
+				//Get skills orginized.
+				Skills skills = new Skills(new List<string>());
+				List<string> skillsUpperCase = new List<string>();
+				string[] skillsArray = skillsTextBox.Text.Split(',');
+				foreach (string skill in skillsArray)
+				{
+					if (skillsUpperCase.Contains(skill.Trim().ToUpper()))
+						continue;
+					skills.skills.Add(skill.Trim());
+					skillsUpperCase.Add(skill.Trim().ToUpper());
+				}
+
+				//Ensure nothing went wrong.
+				if (errors.Length > 0)
+					throw new Exception(errors.ToString());
+
+				//Update and save data.
+				Home.stats = stats;
+				FileManager.SaveXml(stats.ConvertToXml(), FileType.QUICK_STAT, FileManager.quickStatsFileName);
+				Home.skills = skills;
+				FileManager.SaveXml(skills.ConvertToXml(), FileType.QUICK_STAT, FileManager.skillsFileName);
+
+				//Close the form.
+				statusChanged = false;
+				Close();
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show("Could not save due to the following errors:" + ex.Message);
+			}
+		}
+
+		/// <summary>
+		/// User is done with the form, so close it.
+		/// </summary>
+		/// <param name="sender">Unused</param>
+		/// <param name="e">Unused</param>
+		private void cancelButton_Click(object sender, EventArgs e)
+		{
+			statusChanged = false;
+			Close();
+		}
+		#endregion Lifecycle
+
+		#region Stats
+		/// <summary>
+		/// Paint the copy symbol on the stats' buttons.
+		/// </summary>
+		/// <param name="sender">Unused</param>
+		/// <param name="e">The cell being painted</param>
 		private void mainDataGridView_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
 		{
 			try
@@ -114,95 +229,11 @@ namespace JAM
 			catch { }
 		}
 
-		private void QuickStats_FormClosing(object sender, FormClosingEventArgs e)
-		{
-			if (statusChanged &&
-				MessageBox.Show("You have made changes. Discard changes and close quick stats?",
-				"Close?", MessageBoxButtons.OKCancel) != DialogResult.OK)
-			{
-				e.Cancel = true;
-				return;
-			}
-
-			if (instance == this)
-				instance = null;
-		}
-
-		private void saveButton_Click(object sender, EventArgs e)
-		{
-			try
-			{
-				StringBuilder errors = new StringBuilder();
-
-				Stats stats = new Stats(new List<(string name, string value)>());
-
-				foreach (DataGridViewRow row in mainDataGridView.Rows)
-				{
-					try
-					{
-						int index = row.Index;
-						string name = (string)row.Cells[0].Value;
-						string value = (string)row.Cells[1].Value;
-
-						if (string.IsNullOrWhiteSpace(name) && string.IsNullOrWhiteSpace(value))
-							continue;
-
-						stats.stats.Add((name, value));
-					}
-					catch (Exception ex)
-					{
-						errors.Append("\nRow " + row.Index + 1 + " of skills has the error: " + ex.Message);
-					}
-				}
-
-				Skills skills = new Skills(new List<string>());
-				List<string> skillsUpperCase = new List<string>();
-				string[] skillsArray = skillsTextBox.Text.Split(',');
-				foreach (string skill in skillsArray)
-				{
-					if (skillsUpperCase.Contains(skill.Trim().ToUpper()))
-						continue;
-					skills.skills.Add(skill.Trim());
-					skillsUpperCase.Add(skill.Trim().ToUpper());
-				}
-
-				if (errors.Length > 0)
-					throw new Exception(errors.ToString());
-
-				Home.stats = stats;
-				FileManager.SaveXml(stats.ConvertToXml(), FileType.QUICK_STAT, FileManager.quickStatsFileName);
-				Home.skills = skills;
-				FileManager.SaveXml(skills.ConvertToXml(), FileType.QUICK_STAT, FileManager.skillsFileName);
-
-				statusChanged = false;
-				Close();
-			}
-			catch (Exception ex)
-			{
-				MessageBox.Show("Could not save due to the following errors:" + ex.Message);
-			}
-		}
-
-		private void mainDataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
-		{
-			statusChanged = true;
-		}
-
-		private void mainDataGridView_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
-		{
-			statusChanged = true;
-		}
-
-		private void mainDataGridView_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
-		{
-			statusChanged = true;
-		}
-
-		private void skillsButton_Click(object sender, EventArgs e)
-		{
-			Clipboard.SetText(skillsTextBox.Text);
-		}
-
+		/// <summary>
+		/// If the copy button of a cell is clicked, copy the value of the stat of the row.
+		/// </summary>
+		/// <param name="sender">Unused</param>
+		/// <param name="e">The cell being clicked</param>
 		private void mainDataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
 		{
 			if (e.ColumnIndex == 2 &&
@@ -211,10 +242,57 @@ namespace JAM
 				Clipboard.SetText((string)mainDataGridView[1, e.RowIndex].Value);
 		}
 
-		private void cancelButton_Click(object sender, EventArgs e)
+		/// <summary>
+		/// A cell has been changed so mark the form as dirty.
+		/// </summary>
+		/// <param name="sender">Unused</param>
+		/// <param name="e">Unused</param>
+		private void mainDataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
 		{
-			statusChanged = false;
-			Close();
+			statusChanged = true;
 		}
+
+		/// <summary>
+		/// A row has been added so mark the form as dirty.
+		/// </summary>
+		/// <param name="sender">Unused</param>
+		/// <param name="e">Unused</param>
+		private void mainDataGridView_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
+		{
+			statusChanged = true;
+		}
+
+		/// <summary>
+		/// A row has been removed so mark the form as dirty.
+		/// </summary>
+		/// <param name="sender">Unused</param>
+		/// <param name="e">Unused</param>
+		private void mainDataGridView_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
+		{
+			statusChanged = true;
+		}
+		#endregion Stats
+
+		#region Skills
+		/// <summary>
+		/// The user clicked the copy skills button, so copy them.
+		/// </summary>
+		/// <param name="sender">Unused</param>
+		/// <param name="e">Unused</param>
+		private void skillsButton_Click(object sender, EventArgs e)
+		{
+			Clipboard.SetText(skillsTextBox.Text);
+		}
+
+		/// <summary>
+		/// The skills have changed, so mark the form as dirty.
+		/// </summary>
+		/// <param name="sender">Unused</param>
+		/// <param name="e">Unused</param>
+		private void skillsTextBox_TextChanged(object sender, EventArgs e)
+		{
+			statusChanged = true;
+		}
+		#endregion Skills
 	}
 }

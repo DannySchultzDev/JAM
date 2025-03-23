@@ -15,28 +15,28 @@ You should have received a copy of the GNU General Public License along with JAM
 <https://www.gnu.org/licenses/>.
 */
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
 namespace JAM
 {
 	public partial class Credits : Form
 	{
+		#region Lifecycle
+		/// <summary>
+		/// Base Constructor.
+		/// </summary>
 		public Credits()
 		{
 			InitializeComponent();
 		}
 
+		/// <summary>
+		/// User is done with Credits. So close the window.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void doneButton_Click(object sender, EventArgs e)
 		{
 			Close();
 		}
+		#endregion Lifecycle
 	}
 }
