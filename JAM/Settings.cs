@@ -132,17 +132,28 @@ namespace JAM
 		{
 			try
 			{
+				//Salt to use for password encryption.
+				string? salt = null;
+
 				//Set encryption type.
 				if (usePasswordCheckBox.Checked)
 				{
+					byte[] saltBytes = new byte[16];
+					Random random = new();
+					for (int i = 0; i < saltBytes.Length; ++i)
+						saltBytes[i] = (byte)random.Next(256);
+
+					salt = EncryptionManager.GetString(saltBytes);
+
 					EncryptionManager.encryptionType = EncryptionType.TEMP;
-					EncryptionManager.SetTempKey(passwordTextBox.Text);
+					EncryptionManager.SetTempKey(passwordTextBox.Text, salt);
 				}
 				else
 					EncryptionManager.encryptionType = EncryptionType.NONE;
 
 				XmlDocument xmlDocument = new XmlDocument();
 				XmlElement root = xmlDocument.CreateElement(XmlNodeName.ROOT.ToString());
+				root.SetAttribute(XmlNodeName.IV.ToString(), salt);
 				xmlDocument.AppendChild(root);
 
 				//Append every file of every data type.
@@ -237,16 +248,27 @@ namespace JAM
 					xmlDocument.Load(openFileDialog.FileName);
 				}
 
+				XmlElement root = xmlDocument.DocumentElement!;
+
 				//Set the encryption type.
 				if (usePasswordCheckBox.Checked)
 				{
 					EncryptionManager.encryptionType = EncryptionType.TEMP;
-					EncryptionManager.SetTempKey(passwordTextBox.Text);
+
+					string salt = root.GetAttribute(XmlNodeName.IV.ToString());
+					if (string.IsNullOrEmpty(salt))
+					{
+						//If this is an old file without salt use the original SHA hash.
+						EncryptionManager.SetTempKey(passwordTextBox.Text);
+					}
+					else
+					{
+						//If this is a new file with salt use the new Pbkdf2 hash.
+						EncryptionManager.SetTempKey(passwordTextBox.Text, salt);
+					}
 				}
 				else
 					EncryptionManager.encryptionType = EncryptionType.NONE;
-
-				XmlElement root = xmlDocument.DocumentElement!;
 
 				//Get the individual data objects out of the XML.
 				List<Company> companies = new List<Company>();

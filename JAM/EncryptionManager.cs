@@ -214,6 +214,22 @@ namespace JAM
 				tempKey = sha256.ComputeHash(GetBytes(password));
 			}
 		}
+
+		/// <summary>
+		/// Sets the temp key to use with the TEMP Encryption Type.
+		/// </summary>
+		/// <param name="password">The password used as a base for the temp key.</param>
+		/// <param name="salt">Salt used to strengthen encryption.</param>
+		public static void SetTempKey(string password, string salt)
+		{
+			tempKey = Rfc2898DeriveBytes.Pbkdf2(
+				GetBytes(password),
+				GetBytes(salt),
+				310000,
+				HashAlgorithmName.SHA256,
+				32
+			);
+		}
 		#endregion Misc
 	}
 
